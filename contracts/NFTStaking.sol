@@ -325,19 +325,12 @@ contract NFTStaking is Ownable {
         (partCode, id) = ECIOERC721(contractAddress).tokenInfo(tokenId);
         string[] memory splittedPartCodes = splitPartCode(partCode);
 
-        //HP = SHInfo.Hp * (SWInfo.BonusHp * SSInfo.BonusHp * SCInfo.BonusHp * SGInfo.BonusHp * SDInfo.BonusHp * SBInfo.BonusHp * rank * lv)
         uint256 hp = calculateHP(splittedPartCodes);
-
-        // DEF = SSInfo.Def * (SHInfo.BonusDef * 	SWInfo.BonusDef *	SSInfo.BonusDef *	SCInfo.BonusDef *	SGInfo.BonusDef *	SDInfo.BonusDef *SBInfo.BonusDef *rank *	lv)
         uint256 def = calculateDef(splittedPartCodes);
-
-        // ATK = SWInfo.Atk * (SHInfo.BonusAtk * 	SSInfo.BonusAtk *	SCInfo.BonusAtk *	SGInfo.BonusAtk *	SDInfo.BonusAtk *	SBInfo.BonusAtk *	rank *	lv)
         uint256 atk = calculateAtk(splittedPartCodes);
-
-        // ASPD = SWInfo.Aspd / (SHInfo.BonusAspd *	SWInfo.BonusAspd *	SSInfo.BonusAspd *	SCInfo.BonusAspd *	SGInfo.BonusAspd *	SDInfo.BonusAspd *	SBInfo.BonusAspd *	rank *	lv)
         uint256 aspd = calculateAspd(splittedPartCodes);
-        return (hp/10000)*1e18;
-        return  hp + ((atk / aspd) * 10) + (def * 15);
+
+        return hp + ((atk / aspd) * (10 * 1e18)) + (def * 15);
     }
 
     function calculateHP(string[] memory splittedPartCodes)
@@ -352,21 +345,16 @@ contract NFTStaking is Ownable {
         string memory weaponCode = splittedPartCodes[PC_WEAPON];
         string memory headCode = splittedPartCodes[PC_GENOME];
         string memory campCode = splittedPartCodes[PC_CAMP];
-        uint256 rank = 1;
-        uint256 lv = 1;
-        //HP = SHInfo.Hp * (SWInfo.BonusHp * SSInfo.BonusHp * SCInfo.BonusHp * SGInfo.BonusHp * SDInfo.BonusHp * SBInfo.BonusHp * rank * lv)
-        // return  headContract.getValue(headCode, HP);
-        // return battleWeaponContract.getValue(weaponCode, BONUS_HP);
+
         return
-            headContract.getValue(headCode, HP) *
-            (battleWeaponContract.getValue(weaponCode, BONUS_HP) *
+            (((headContract.getValue(headCode, HP) *
+                battleWeaponContract.getValue(weaponCode, BONUS_HP) *
                 battleSuiteContract.getValue(suiteCode, BONUS_HP) *
                 campContract.getValue(campCode, BONUS_HP) *
                 battleGearContract.getValue(gearCode, BONUS_HP) *
                 battleDroneContract.getValue(droneCode, BONUS_HP) *
-                battleBotContract.getValue(botCode, BONUS_HP) *
-                rank *
-                lv);
+                battleBotContract.getValue(botCode, BONUS_HP)) / (10000**5)) *
+                1e18) / (10000**2);
     }
 
     function calculateDef(string[] memory splittedPartCodes)
@@ -381,20 +369,17 @@ contract NFTStaking is Ownable {
         string memory weaponCode = splittedPartCodes[PC_WEAPON];
         string memory headCode = splittedPartCodes[PC_GENOME];
         string memory campCode = splittedPartCodes[PC_CAMP];
-        uint256 rank = 1;
-        uint256 lv = 1;
 
         return
-            battleSuiteContract.getValue(suiteCode, DEF) *
-            (headContract.getValue(headCode, BONUS_DEF) *
-                battleWeaponContract.getValue(weaponCode, BONUS_DEF) *
-                battleSuiteContract.getValue(suiteCode, BONUS_DEF) *
-                campContract.getValue(campCode, BONUS_DEF) *
-                battleGearContract.getValue(gearCode, BONUS_DEF) *
-                battleDroneContract.getValue(droneCode, BONUS_DEF) *
-                battleBotContract.getValue(botCode, BONUS_DEF) *
-                rank *
-                lv);
+            (((battleSuiteContract.getValue(suiteCode, DEF) *
+                (headContract.getValue(headCode, BONUS_DEF) *
+                    battleWeaponContract.getValue(weaponCode, BONUS_DEF) *
+                    battleSuiteContract.getValue(suiteCode, BONUS_DEF) *
+                    campContract.getValue(campCode, BONUS_DEF) *
+                    battleGearContract.getValue(gearCode, BONUS_DEF) *
+                    battleDroneContract.getValue(droneCode, BONUS_DEF) *
+                    battleBotContract.getValue(botCode, BONUS_DEF))) /
+                (10000**6)) * 1e18) / (10000**2);
     }
 
     function calculateAtk(string[] memory splittedPartCodes)
@@ -409,19 +394,16 @@ contract NFTStaking is Ownable {
         string memory weaponCode = splittedPartCodes[PC_WEAPON];
         string memory headCode = splittedPartCodes[PC_GENOME];
         string memory campCode = splittedPartCodes[PC_CAMP];
-        uint256 rank = 1;
-        uint256 lv = 1;
 
         return
-            battleWeaponContract.getValue(weaponCode, BONUS_ATK) *
-            (headContract.getValue(headCode, BONUS_ATK) *
-                battleSuiteContract.getValue(suiteCode, BONUS_ATK) *
-                campContract.getValue(campCode, BONUS_ATK) *
-                battleGearContract.getValue(gearCode, BONUS_ATK) *
-                battleDroneContract.getValue(droneCode, BONUS_ATK) *
-                battleBotContract.getValue(botCode, BONUS_ATK) *
-                rank *
-                lv);
+            (((battleWeaponContract.getValue(weaponCode, ATK) *
+                (headContract.getValue(headCode, BONUS_ATK) *
+                    battleSuiteContract.getValue(suiteCode, BONUS_ATK) *
+                    campContract.getValue(campCode, BONUS_ATK) *
+                    battleGearContract.getValue(gearCode, BONUS_ATK) *
+                    battleDroneContract.getValue(droneCode, BONUS_ATK) *
+                    battleBotContract.getValue(botCode, BONUS_ATK))) /
+                (10000**5)) * 1e18) / (10000**2);
     }
 
     function calculateAspd(string[] memory splittedPartCodes)
@@ -437,20 +419,15 @@ contract NFTStaking is Ownable {
         string memory headCode = splittedPartCodes[PC_GENOME];
         string memory campCode = splittedPartCodes[PC_CAMP];
 
-        uint256 rank = 1;
-        uint256 lv = 1;
-
         return
-            battleWeaponContract.getValue(weaponCode, BONUS_ATK) /
-            (headContract.getValue(headCode, BONUS_ATK) *
-                battleWeaponContract.getValue(weaponCode, BONUS_ATK) *
-                battleSuiteContract.getValue(suiteCode, BONUS_ATK) *
-                campContract.getValue(campCode, BONUS_ATK) *
-                battleGearContract.getValue(gearCode, BONUS_ATK) *
-                battleDroneContract.getValue(droneCode, BONUS_ATK) *
-                battleBotContract.getValue(botCode, BONUS_ATK) *
-                rank *
-                lv);
+            (battleWeaponContract.getValue(weaponCode, ASPD) * 1e18) /
+            ((headContract.getValue(headCode, BONUS_ASPD) *
+                battleWeaponContract.getValue(weaponCode, BONUS_ASPD) *
+                battleSuiteContract.getValue(suiteCode, BONUS_ASPD) *
+                campContract.getValue(campCode, BONUS_ASPD) *
+                battleGearContract.getValue(gearCode, BONUS_ASPD) *
+                battleDroneContract.getValue(droneCode, BONUS_ASPD) *
+                battleBotContract.getValue(botCode, BONUS_ASPD)) / (10000**6));
     }
 
     function totalCollectionBonus(address account)

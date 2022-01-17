@@ -23,6 +23,19 @@ contract BattleGear {
  
  function initialize() public {
         
+                 
+            info["SG00"][HP] = 0;
+            info["SG00"][ATK] = 0;
+            info["SG00"][DEF] = 0;
+            info["SG00"][ASPD] = 0;
+            info["SG00"][RANGE] = 0;
+            info["SG00"][BONUS_HP] = 10000;
+            info["SG00"][BONUS_ATK] = 10000;
+            info["SG00"][BONUS_DEF] = 10000;
+            info["SG00"][BONUS_ASPD] = 10000;
+            info["SG00"][CRIT] = 0;
+            info["SG00"][DODGE] = 0;
+            info["SG00"][LIFESTEAL] = 0;
          
             info["SG01"][HP] = 0;
             info["SG01"][ATK] = 0;
