@@ -12,14 +12,18 @@ async function main() {
   // If this script is run directly using `node` you may want to call compile
   // manually to make sure everything is compiled
   // await hre.run('compile');
+  //
+  let contracts = ["BattleBot","BattleDrone","BattleGear","BattleSuite","BattleWeapon","SpaceCrew"];
+ 
+  for (let i = 0; i < contracts.length; i++) {
+    const name = contracts[i];
+    const contract = await hre.ethers.getContractFactory(name);
+    const deployedContract = await contract.deploy();
+    await deployedContract.deployed();
+    console.log(name + " Address:", deployedContract.address);
+    console.log("npx hardhat  verify --network testnet " + deployedContract.address + "  --contract contracts/" + name + ".sol:" + name)
+  }
 
-  // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
-
-  await greeter.deployed();
-
-  console.log("Greeter deployed to:", greeter.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
