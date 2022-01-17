@@ -1,14 +1,14 @@
-// const { mnemonic, privateKey, infuraProjectId, etherscanApiKey } = require('./secrets.json');
+const { mnemonic, privateKey, infuraProjectId, etherscanApiKey } = require('./secrets.json');
 
 require("@nomiclabs/hardhat-waffle");
 require('@nomiclabs/hardhat-ethers');
 require("@nomiclabs/hardhat-etherscan");
 
 // const { mnemonic, privateKey } = require('./secrets.json');
-const fs = require('fs')
-// const privateKey = fs.readFileSync(".secret").toString().trim() || "01234567890123456789"
-const mnemonic = fs.readFileSync(".secret").toString().trim() || "01234567890123456789"
-const apiKey = fs.readFileSync(".apiKey").toString().trim()
+// const fs = require('fs')
+// // const privateKey = fs.readFileSync(".secret").toString().trim() || "01234567890123456789"
+// const mnemonic = fs.readFileSync(".secret").toString().trim() || "01234567890123456789"
+// const apiKey = fs.readFileSync(".apiKey").toString().trim()
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
@@ -37,10 +37,10 @@ const apiKey = fs.readFileSync(".apiKey").toString().trim()
     }
    },
    etherscan: {
-    apiKey: apiKey
+    apiKey: etherscanApiKey
    },
    solidity: {
-   version: "0.8.3",
+   version: "0.8.7",
    settings: {
      optimizer: {
        enabled: true 

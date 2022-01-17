@@ -13,7 +13,7 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
   //
-  let contracts = ["BattleBot","BattleDrone","BattleGear","BattleSuite","BattleWeapon","SpaceCrew"];
+  let contracts = ["NFTStaking"];
  
   for (let i = 0; i < contracts.length; i++) {
     const name = contracts[i];
