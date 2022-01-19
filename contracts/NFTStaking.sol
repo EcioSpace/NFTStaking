@@ -345,7 +345,12 @@ contract NFTStaking is Ownable, ECIOHelper {
         returns (uint256, uint256)
     {}
 
-    function unJoinAllWarrior() public {}
+    function unJoinAllWarrior(address account) public {
+        StakedNFT[] memory NFTs = getMyStakedNFTs(account);
+        for (uint256 index = 0; index < NFTs.length; index++) {
+            unJoinWarrior(NFTs[index].tokenId);
+        }
+    }
 
     function unJoinWarrior(uint256 tokenId) public updateReward(msg.sender) {
         
