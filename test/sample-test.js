@@ -7,8 +7,8 @@ describe("NFT Staking", function () {
   let nftCoreContract;
   let NFTStakingContract;
   let battleBotContract;
-  let battleDroneContract,battleGearContract,battleSuiteContract,battleWeaponContract;
-  let EcioOneLegendaryCollectionContract;
+  let battleDroneContract, battleGearContract, battleSuiteContract, battleWeaponContract;
+  let Ecio2EpicWarriorsCollectionContract;
   let spaceCampContract;
   let headContract;
 
@@ -56,29 +56,27 @@ describe("NFT Staking", function () {
     await headContract.connect(owner).initialize();
 
 
-    await nftCoreContract.connect(owner).safeMint(owner.address, "00000000010300010004020006"); //5000
+    await nftCoreContract.connect(owner).safeMint(owner.address, "00000000001510010000010006"); //5000
 
-    await nftCoreContract.connect(owner).safeMint(addr1.address, "00000000010300010004020006"); //5001
-    await nftCoreContract.connect(owner).safeMint(addr1.address, "00000000010300010004020006"); //5002
-    await nftCoreContract.connect(owner).safeMint(addr1.address, "00000000010300010004020006"); //5003
+    await nftCoreContract.connect(owner).safeMint(addr1.address, "00000000001510010000010006"); //5001
+    await nftCoreContract.connect(owner).safeMint(addr1.address, "00000000001510010000010006"); //5002
+    await nftCoreContract.connect(owner).safeMint(addr1.address, "00000000001510010000010006"); //5003
 
-    await nftCoreContract.connect(owner).safeMint(addr2.address, "00000000010300010004020006"); //5004
-    await nftCoreContract.connect(owner).safeMint(addr2.address, "00000000010300010004020006"); //5005
-    await nftCoreContract.connect(owner).safeMint(addr2.address, "00000000010300010004020006"); //5006
+    await nftCoreContract.connect(owner).safeMint(addr2.address, "00000000001510010000010006"); //5004
+    await nftCoreContract.connect(owner).safeMint(addr2.address, "00000000001510010000010006"); //5005
+    await nftCoreContract.connect(owner).safeMint(addr2.address, "00000000001510010000010006"); //5006
 
     expect(await nftCoreContract.balanceOf(owner.address)).to.equal(1);
     expect(await nftCoreContract.balanceOf(addr1.address)).to.equal(3);
     expect(await nftCoreContract.balanceOf(addr2.address)).to.equal(3);
 
-
-
     const NFTStaking = await ethers.getContractFactory("NFTStaking");
     NFTStakingContract = await NFTStaking.deploy();
 
-    const EcioOneLegendaryCollection = await ethers.getContractFactory("EcioOneLegendaryCollection");
-    EcioOneLegendaryCollectionContract = await EcioOneLegendaryCollection.deploy();
+    const Ecio2EpicWarriorsCollection = await ethers.getContractFactory("Ecio2EpicWarriorsCollection");
+    Ecio2EpicWarriorsCollectionContract = await Ecio2EpicWarriorsCollection.deploy();
 
-    
+
 
     await NFTStakingContract.connect(owner).setupContract(nftCoreContract.address, nftCoreContract.address);
     await nftCoreContract.connect(owner).addOperatorAddress(NFTStakingContract.address);
@@ -91,58 +89,77 @@ describe("NFT Staking", function () {
     await NFTStakingContract.connect(owner).updateCampContract(spaceCampContract.address);
     await NFTStakingContract.connect(owner).updateHeadContract(headContract.address);
     //Add Collection
-    await NFTStakingContract.connect(owner).addNewCollection(EcioOneLegendaryCollectionContract.address, "EcioOneLegendaryCollectionContract");
+    await NFTStakingContract.connect(owner).addNewCollection(Ecio2EpicWarriorsCollectionContract.address, "Ecio2EpicWarriorsCollectionContract");
     // await NFTStakingContract.connect(owner).addNewCollection(EcioOneLegendaryCollectionContract.address, "EcioOneLegendaryCollectionContract");
   });
 
   it("totalCollectionBonus", async function () {
-   
+
   });
 
   it("Stake", async function () {
 
-    // expect(0).to.equal(await NFTStakingContract.totalBattlePower(addr1.address));
+    expect(0).to.equal(await NFTStakingContract.getTotalBattlePower(addr1.address));
 
-    // NFTStakingContract.stake()
+    await NFTStakingContract.getMyStakedNFTs(addr1.address).then((data) => {
+      console.log(data)
+    })
+
     await nftCoreContract.connect(addr1).approve(NFTStakingContract.address, 5001);
     await nftCoreContract.connect(addr1).approve(NFTStakingContract.address, 5002);
 
     await NFTStakingContract.connect(addr1).joinWarrior(5001);
     await NFTStakingContract.connect(addr1).joinWarrior(5002);
 
-   /*
-    00  PC_RESERVED2
-    00  PC_RESERVED1
-    00  PC_EQUIPMENT
-    00  PC_STAR
-    01  PC_WEAPON
-    03  PC_GENOME
-    00  PC_BOT
-    01  PC_SUITE
-    00  PC_DRONE
-    04  PC_GEAR
-    02  PC_CAMP
-    00  PC_KINGDOM
-    06  PC_NFT_TYPE
-    */
-    await NFTStakingContract.calculateBattlePower(nftCoreContract.address, 5001).then((data) => {
-    console.log(data)
-      // expect(data.length).to.equal(2);
+    await NFTStakingContract.getMyStakedNFTs(addr1.address).then((data) => {
+      console.log(data)
     })
-    
- 
+
+    expect("4820000000000000000000").to.equal(await NFTStakingContract.getTotalBattlePower(addr1.address));
+
+    /* 
+     00 00 00 00 00 15 10 01 00 00 01 00 06
+     00 00 00 00 01 03 00 01 00 04 02 00 06
+     00  PC_RESERVED2
+     00  PC_RESERVED1
+     00  PC_EQUIPMENT
+     00  PC_STAR
+     01  PC_WEAPON
+     03  PC_GENOME
+     00  PC_BOT
+     01  PC_SUITE
+     00  PC_DRONE
+     04  PC_GEAR
+     02  PC_CAMP
+     00  PC_KINGDOM
+     06  PC_NFT_TYPE
+     */
+
+
+
+    // expect("2410000000000000000000").to.equal(await NFTStakingContract.calculateBattlePower(nftCoreContract.address, 5001));
+    // expect("2410000000000000000000").to.equal(await NFTStakingContract.calculateBattlePower(nftCoreContract.address, 5002));
+
+    // expect("4820000000000000000000").to.equal(await NFTStakingContract.battlePowerBalances(addr1.address));
+
     // await NFTStakingContract.getMyStakedNFTs(addr1.address).then((data) => {
-    //   // console.log(data)
+    //   console.log(data)
     //   expect(data.length).to.equal(2);
     // })
- 
+
+
+
+
+    // expect("0").to.equal(await NFTStakingContract.battlePowerBalances(addr1.address));
+
+
     // await NFTStakingContract.splitPartCode("00000000000100040001000006").then((data)=>{
     //   console.log(data)
     // })
 
     // expect(2).to.equal(await NFTStakingContract.getTotalBattlePower(addr1.address));
     // expect(2).to.equal(await NFTStakingContract.SplitPartCode("00000000000100040001000006"));
-    
+
     //expect(100).to.equal(await NFTStakingContract.totalCollectionBonus(addr1.address));
 
     // expect(await NFTStakingContract.getMyStakedNFTs(addr1.address).length).to.equal(2);
@@ -151,9 +168,25 @@ describe("NFT Staking", function () {
   });
 
   it("unstake", async function () {
-    // await NFTStakingContract.connect(addr1).unJoinWarrior(5001);
-    // await NFTStakingContract.connect(addr1).unJoinWarrior(5002);
-    // expect(0).to.equal(await NFTStakingContract.totalBattlePower(addr1.address));
+    await NFTStakingContract.connect(addr1).unJoinWarrior(5001);
+    await NFTStakingContract.connect(addr1).unJoinWarrior(5002);
+    await NFTStakingContract.getMyStakedNFTs(addr1.address).then((data) => {
+      console.log(data)
+    })
+    expect(0).to.equal(await NFTStakingContract.getTotalBattlePower(addr1.address));
+  });
+
+  it("Ranking", async function () {
+    await NFTStakingContract.getTop100Ranking().then((data) => {
+      console.log(data)
+
+    });
+  });
+
+  it("claimReward", async function () {
+    expect(28920).to.equal(await NFTStakingContract.rewards(addr1.address));
+    expect(false).to.equal(await NFTStakingContract.canClaimReward(addr1.address));
+    // await NFTStakingContract.connect(addr1).claimReward();
   });
 
   // it("Canceled Order Testing", async function () {
