@@ -5,7 +5,7 @@ contract ECIOHelper {
     
     function splitPartCode(string memory partCode)
         public
-        view
+        pure
         returns (string[] memory)
     {
         string[] memory result = new string[](bytes(partCode).length / 2);
