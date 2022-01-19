@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./helper/Helper.sol";
 import "hardhat/console.sol";
 
 interface IERC20 {
@@ -57,7 +58,7 @@ interface CollectionBonus {
     ) external view returns (uint256);
 }
 
-contract NFTStaking is Ownable {
+contract NFTStaking is Ownable, ECIOHelper {
     using Counters for Counters.Counter;
 
     uint256 constant REWARD_POOL = 30000000000000000000000000;
@@ -89,10 +90,11 @@ contract NFTStaking is Ownable {
     uint256 constant PC_EQUIPMENT = 2;
     uint256 constant PC_RESERVED1 = 1;
     uint256 constant PC_RESERVED2 = 0;
+    uint256 constant MINIMUM_AMOUNT_CLAIM = 12500 * 1e18;
 
     IERC20 public rewardsTokenContract;
 
-    uint256 public rewardRate = 100;
+    uint256 public rewardRate = 10000;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
 
@@ -100,7 +102,10 @@ contract NFTStaking is Ownable {
     mapping(address => uint256) public tokenRewards;
 
     uint256 private _totalSupply;
+
     mapping(address => uint256) private _battlePowerBalances;
+
+    mapping(address => uint256) public accountLastClaim;
 
     struct StakedNFT {
         uint256 tokenId;
@@ -108,6 +113,12 @@ contract NFTStaking is Ownable {
         uint256 timestamp;
         address owner;
         bool isStaked;
+        uint256 battlePower;
+        string name;
+        uint256 hp;
+        uint256 atk;
+        uint256 aspd;
+        uint256 def;
     }
 
     struct Collection {
@@ -122,12 +133,16 @@ contract NFTStaking is Ownable {
 
     mapping(address => uint256[]) public userNFTIds;
     mapping(address => uint256) public userStakedNFTCount;
-    mapping(address => mapping(uint256 => bool)) userNFTOwner;
+    mapping(uint256 => address) nftAccounts;
     mapping(uint256 => uint256) public nftStakedNFTIds;
 
-    StakedNFT[] public stakedNFTs;
+    mapping(uint256 => StakedNFT) public stakedNFTs;
+
     Collection[] public collections;
-    Counters.Counter private collectionIdCounter;
+    Counters.Counter public collectionIdCounter;
+    Counters.Counter public stakedIdCounter;
+
+    address payable public contractWallet;
 
     constructor() {}
 
@@ -207,6 +222,15 @@ contract NFTStaking is Ownable {
         collectionIdCounter.increment();
     }
 
+    function canClaimReward(address account) public view returns (bool) {
+        //   return
+        //     (rewards(account) >= MINIMUM_AMOUNT_CLAIM) &&
+        //     (block.timestamp >= accountLastClaim[msg.sender] + 10 days);
+        return
+            (rewards(account) >= MINIMUM_AMOUNT_CLAIM) &&
+            (block.timestamp >= accountLastClaim[msg.sender] + 5 minutes);
+    }
+
     function rewardPerToken() public view returns (uint256) {
         if (_totalSupply == 0) {
             return 0;
@@ -218,7 +242,8 @@ contract NFTStaking is Ownable {
     }
 
     function joinWarrior(uint256 tokenId) public updateReward(msg.sender) {
-        //Owner validation
+       
+        //Find NFT in account's wallet
         address ownerV1 = ERC721(NFTCoreV1).ownerOf(tokenId);
         address ownerV2 = ERC721(NFTCoreV2).ownerOf(tokenId);
 
@@ -234,40 +259,69 @@ contract NFTStaking is Ownable {
             nftCoreAddress = NFTCoreV2;
         }
 
-        //Transfer token to this contract
+        //Transfer NFT to this contract
         ERC721(nftCoreAddress).transferFrom(msg.sender, address(this), tokenId);
 
-        stakedNFTs.push(
-            StakedNFT(
-                tokenId,
-                nftCoreAddress,
-                block.timestamp,
-                msg.sender,
-                true
-            )
+        //Generate stakedId
+        uint256 stakedId = stakedIdCounter.current();
+        stakedIdCounter.increment();
+
+        uint256 baseBattlePower;
+        uint256 hp;
+        uint256 def;
+        uint256 atk;
+        uint256 aspd;
+
+        userNFTIds[msg.sender].push(stakedId);
+
+        nftAccounts[tokenId] = msg.sender;
+
+        (baseBattlePower, hp, def, atk, aspd) = calculateBattlePower(
+            nftCoreAddress,
+            tokenId
         );
 
-        uint256 id = getStakedNFTId();
+        uint256 bonusBattlePower = totalCollectionBonus(msg.sender);
 
-        userNFTIds[msg.sender].push(id);
+        stakedNFTs[stakedId] = StakedNFT(
+            tokenId,
+            nftCoreAddress,
+            block.timestamp,
+            msg.sender,
+            true,
+            (baseBattlePower + bonusBattlePower),
+            "Exmple Name",
+            hp,
+            def,
+            atk,
+            aspd
+        );
 
         userStakedNFTCount[msg.sender] += 1;
+        nftStakedNFTIds[tokenId] = stakedId;
 
-        userNFTOwner[msg.sender][tokenId] = true;
-
-        nftStakedNFTIds[tokenId] = id;
-
-        uint256 battlePower = calculateBattlePower(nftCoreAddress, tokenId);
-        _totalSupply += battlePower;
-        _battlePowerBalances[msg.sender] += battlePower;
+        _totalSupply += (baseBattlePower + bonusBattlePower);
+        _battlePowerBalances[msg.sender] += (baseBattlePower +
+            bonusBattlePower);
     }
 
-    function unJoinWarrior(uint256 tokenId) public {
-        require(userNFTOwner[msg.sender][tokenId], "You is not nft owner.");
+    function stakedOnChallege(uint256 challegeId, address acount)
+        public
+        view
+        returns (uint256, uint256)
+    {}
+
+    function unJoinAllWarrior() public {}
+
+    function unJoinWarrior(uint256 tokenId) public updateReward(msg.sender) {
+        
+        require(nftAccounts[tokenId] == msg.sender, "You is not nft owner.");
 
         uint256 stakedNFTId = nftStakedNFTIds[tokenId];
 
         StakedNFT memory stakedNFT = stakedNFTs[stakedNFTId];
+
+        require(stakedNFT.isStaked, "The NFT Not found");
 
         ERC721(stakedNFT.contractAddress).transferFrom(
             address(this),
@@ -275,14 +329,15 @@ contract NFTStaking is Ownable {
             tokenId
         );
 
-        uint256 battlePower = calculateBattlePower(
-            stakedNFT.contractAddress,
-            tokenId
-        );
+        uint256 battlePower = stakedNFT.battlePower;
+
         _totalSupply -= battlePower;
         _battlePowerBalances[msg.sender] -= battlePower;
 
-        delete userNFTIds[msg.sender][stakedNFTId];
+        stakedNFTs[stakedNFTId].isStaked = false;
+        
+        nftAccounts[tokenId] = address(0);
+     
         userStakedNFTCount[msg.sender] -= 1;
     }
 
@@ -293,32 +348,25 @@ contract NFTStaking is Ownable {
     }
 
     function claimReward() external updateReward(msg.sender) {
+        require(canClaimReward(msg.sender), "Can't claim");
+
         uint256 reward = tokenRewards[msg.sender];
         tokenRewards[msg.sender] = 0;
         rewardsTokenContract.transfer(msg.sender, reward);
-    }
 
-    function splitPartCode(string memory partCode)
-        public
-        view
-        returns (string[] memory)
-    {
-        string[] memory result = new string[](bytes(partCode).length / 2);
-        for (uint256 index = 0; index < bytes(partCode).length / 2; index++) {
-            result[index] = string(
-                abi.encodePacked(
-                    bytes(partCode)[index * 2],
-                    bytes(partCode)[(index * 2) + 1]
-                )
-            );
-        }
-        return result;
+        accountLastClaim[msg.sender] = block.timestamp;
     }
 
     function calculateBattlePower(address contractAddress, uint256 tokenId)
         public
         view
-        returns (uint256)
+        returns (
+            uint256,
+            uint256,
+            uint256,
+            uint256,
+            uint256
+        )
     {
         string memory partCode;
         uint256 id;
@@ -330,7 +378,13 @@ contract NFTStaking is Ownable {
         uint256 atk = calculateAtk(splittedPartCodes);
         uint256 aspd = calculateAspd(splittedPartCodes);
 
-        return hp + ((atk / aspd) * (10 * 1e18)) + (def * 15);
+        return (
+            hp + ((atk / aspd) * (10 * 1e18)) + (def * 15),
+            hp,
+            def,
+            atk,
+            aspd
+        );
     }
 
     function calculateHP(string[] memory splittedPartCodes)
@@ -437,10 +491,6 @@ contract NFTStaking is Ownable {
     {
         StakedNFT[] memory NFTs = getMyStakedNFTs(account);
 
-        if (NFTs.length == 0) {
-            return 0;
-        }
-
         uint256[] memory tokenIds = new uint256[](NFTs.length);
         address[] memory contracts = new address[](NFTs.length);
 
@@ -470,19 +520,17 @@ contract NFTStaking is Ownable {
         view
         returns (StakedNFT[] memory)
     {
-        if (userStakedNFTCount[account] == 0) {
-            StakedNFT[] memory results;
-            return results;
-        }
-
-        uint256 count = 0;
         StakedNFT[] memory results = new StakedNFT[](
             userStakedNFTCount[account]
         );
-
+        uint count = 0;
         for (uint256 index = 0; index < userNFTIds[account].length; index++) {
-            results[count] = stakedNFTs[userNFTIds[account][index]];
-            count++;
+            StakedNFT memory stakedNFT = stakedNFTs[userNFTIds[account][index]];
+            if(stakedNFT.isStaked){
+             results[count] = stakedNFT;
+             count++;
+            }
+           
         }
 
         return results;
@@ -493,32 +541,23 @@ contract NFTStaking is Ownable {
         view
         returns (uint256)
     {
-        uint256 count = 0;
-        uint256 battlePower = 0;
-        StakedNFT[] memory results = new StakedNFT[](
-            userStakedNFTCount[account]
-        );
-
+        uint256 battlePower = 0;  
         for (uint256 index = 0; index < userNFTIds[account].length; index++) {
             StakedNFT memory stakedNFT = stakedNFTs[userNFTIds[account][index]];
-            battlePower += calculateBattlePower(
-                stakedNFT.contractAddress,
-                stakedNFT.tokenId
-            );
+
+            if (stakedNFT.isStaked) { //Calculate staked NFT.
+                uint256 _battlePower;
+                (_battlePower, , , , ) = calculateBattlePower(
+                    stakedNFT.contractAddress,
+                    stakedNFT.tokenId
+                );
+
+                battlePower += _battlePower;
+            }
         }
 
         return battlePower;
     }
-
-    function getStakedNFTId() internal view returns (uint256) {
-        return stakedNFTs.length - 1;
-    }
-
-    function batchStake(uint256[] memory ids) public {}
-
-    function joinedWarriors(address account) public {}
-
-    function totalBattlePower(address account) public {}
 
     //Staking Functions
     function rewards(address account) public view returns (uint256) {
@@ -526,6 +565,14 @@ contract NFTStaking is Ownable {
             ((_battlePowerBalances[account] *
                 (rewardPerToken() - userRewardPerTokenPaid[account])) / 1e18) +
             tokenRewards[account];
+    }
+
+    function battlePowerBalances(address account)
+        public
+        view
+        returns (uint256)
+    {
+        return _battlePowerBalances[account];
     }
 
     modifier updateReward(address account) {
