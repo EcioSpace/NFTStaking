@@ -148,6 +148,7 @@ contract NFTStaking is Ownable, ECIOHelper {
 
     mapping(uint256 => StakedNFT) public stakedNFTs;
     mapping(address => uint256) public userRankIds;
+    mapping(address => bool) public userHasRank;
 
     Collection[] public collections;
     Rank[] public ranks;
@@ -319,9 +320,10 @@ contract NFTStaking is Ownable, ECIOHelper {
         _battlePowerBalances[msg.sender] += (baseBattlePower +
             bonusBattlePower);
 
-        if(userRankIds[msg.sender] == 0){
-            ranks.push(Rank(msg.sender, _battlePowerBalances[msg.sender], userStakedNFTCount[msg.sender]));
+        if(!userHasRank[msg.sender]){
             userRankIds[msg.sender] = ranks.length;
+            ranks.push(Rank(msg.sender, _battlePowerBalances[msg.sender], userStakedNFTCount[msg.sender]));
+            userHasRank[msg.sender] = true;
         }else{
             uint rankId = userRankIds[msg.sender];
             ranks[rankId].totalBattlePower = _battlePowerBalances[msg.sender];
