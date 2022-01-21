@@ -1,6 +1,9 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "../helper/Helper.sol";
+import "../helper/IECIONFT.sol";
+import "../helper/EcioChallenge.sol";
 import "hardhat/console.sol";
 
 interface ECIONFT {
@@ -10,7 +13,7 @@ interface ECIONFT {
         returns (string memory, uint256);
 }
 
-contract Ecio2EpicCollection is ECIOHelper {
+contract Ecio3RareCollection is ECIOHelper {
     IECIONFT nftCoreV1Contract;
     IECIONFT nftCoreV2Contract;
 
@@ -56,14 +59,17 @@ contract Ecio2EpicCollection is ECIOHelper {
             string memory headCode = splittedPartCodes[PC_GENOME];
 
             if (
-                compareStrings(headCode, "13") ||
-                compareStrings(headCode, "14") ||
-                compareStrings(headCode, "15") ||
-                compareStrings(headCode, "16")
+                compareStrings(headCode, "07") ||
+                compareStrings(headCode, "08") ||
+                compareStrings(headCode, "09") ||
+                compareStrings(headCode, "10") ||
+                compareStrings(headCode, "11") ||
+                compareStrings(headCode, "12")
             ) {
                 count++;
+
                 if (count >= 3) {
-                    return 3000 * 1e18;
+                    return 10000 * 1e18;
                 }
             }
         }
