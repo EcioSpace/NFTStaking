@@ -5,9 +5,9 @@ import "../helper/Helper.sol";
 import "../helper/IECIONFT.sol";
 import "hardhat/console.sol";
 
-contract Ecio2LimitedWarriorsCollection is ECIOHelper, IECIONFT {
-    ECIONFT nftCoreV1Contract;
-    ECIONFT nftCoreV2Contract;
+contract Ecio2LimitedWarriorsCollection is ECIOHelper {
+    IECIONFT nftCoreV1Contract;
+    IECIONFT nftCoreV2Contract;
 
     // Part Code Index
     uint256 constant PC_NFT_TYPE = 12;

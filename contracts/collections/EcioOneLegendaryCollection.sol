@@ -5,16 +5,9 @@ import "../helper/Helper.sol";
 import "../helper/IECIONFT.sol";
 import "hardhat/console.sol";
 
-interface ECIONFT {
-    function tokenInfo(uint256 _tokenId)
-        external
-        view
-        returns (string memory, uint256);
-}
-
-contract EcioOneLegendaryCollection is ECIOHelper, IECIONFT {
-    ECIONFT nftCoreV1Contract;
-    ECIONFT nftCoreV2Contract;
+contract EcioOneLegendaryCollection is ECIOHelper {
+    IECIONFT nftCoreV1Contract;
+    IECIONFT nftCoreV2Contract;
 
     // Part Code Index
     uint256 constant PC_NFT_TYPE = 12;

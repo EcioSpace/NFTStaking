@@ -5,7 +5,7 @@ import "../helper/Helper.sol";
 import "../helper/IECIONFT.sol";
 import "hardhat/console.sol";
 
-contract Ecio2EpicCollection is ECIOHelper, IECIONFT {
+contract Ecio2EpicCollection is ECIOHelper {
     IECIONFT nftCoreV1Contract;
     IECIONFT nftCoreV2Contract;
 

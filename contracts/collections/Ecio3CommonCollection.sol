@@ -12,7 +12,7 @@ interface ECIONFT {
         returns (string memory, uint256);
 }
 
-contract Ecio3CommonCollection is ECIOHelper, IECIONFT {
+contract Ecio3CommonCollection is ECIOHelper {
     IECIONFT nftCoreV1Contract;
     IECIONFT nftCoreV2Contract;
 
