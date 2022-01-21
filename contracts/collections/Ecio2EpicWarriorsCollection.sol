@@ -3,17 +3,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "../helper/Helper.sol";
 import "../helper/IECIONFT.sol";
-import "../helper/EcioChallenge.sol";
 import "hardhat/console.sol";
 
-interface ECIONFT {
-    function tokenInfo(uint256 _tokenId)
-        external
-        view
-        returns (string memory, uint256);
-}
-
-contract Ecio2EpicCollection is ECIOHelper {
+contract Ecio2EpicCollection is ECIOHelper, IECIONFT {
     IECIONFT nftCoreV1Contract;
     IECIONFT nftCoreV2Contract;
 
