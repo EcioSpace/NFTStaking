@@ -22,7 +22,9 @@ fs.readFile('metadata.json', (err, data) => {
             info["`+element.CODE+`"][BONUS_ASPD] = `+element.BONUS_ASPD*10000+`;
             info["`+element.CODE+`"][CRIT] = `+element.CRIT*10000+`;
             info["`+element.CODE+`"][DODGE] = `+element.DODGE*10000+`;
-            info["`+element.CODE+`"][LIFESTEAL] = `+element.LIFESTEAL*10000+`;`)
+            info["`+element.CODE+`"][LIFESTEAL] = `+element.LIFESTEAL*10000+`;
+            info["`+element.NAME+`"][NAME] = "`+element.NAME+`";`
+            )
         }        
     }
 });

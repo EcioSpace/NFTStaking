@@ -9,3 +9,6 @@ cache
 artifacts
 .apiKey
 .secret
+.secret.bk
+test.log
+test3.log
