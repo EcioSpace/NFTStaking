@@ -21,6 +21,7 @@ contract EcioOneLegendaryCollection {
     }
     
     function bonus(address account, address[] memory contracts, uint[] memory tokenIds) public view returns (uint256) {
+        
         return 100;
     }
     

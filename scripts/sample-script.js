@@ -3,7 +3,7 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-const hre = require("hardhat");
+const hardhat = require("hardhat");
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -13,11 +13,14 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
   //
-  let contracts = ["BattleBot","BattleDrone","BattleGear","BattleSuite","BattleWeapon","SpaceCrew"];
- 
+  let contracts = ["BattleBot", "BattleDrone", "BattleGear", "BattleSuite", "BattleWeapon", "Head", "SpaceCamp"];
+  contracts = ["NFTStaking"];
+
+  contracts = ["TestSwap"];
+
   for (let i = 0; i < contracts.length; i++) {
     const name = contracts[i];
-    const contract = await hre.ethers.getContractFactory(name);
+    const contract = await hardhat.ethers.getContractFactory(name);
     const deployedContract = await contract.deploy();
     await deployedContract.deployed();
     console.log(name + " Address:", deployedContract.address);

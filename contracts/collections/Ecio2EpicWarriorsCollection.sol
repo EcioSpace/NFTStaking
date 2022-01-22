@@ -7,6 +7,7 @@ import "../helper/EcioChallenge.sol";
 import "hardhat/console.sol";
 
 contract Ecio2EpicWarriorsCollection is EcioChallenge, ECIOHelper {
+    
     IECIONFT nftCoreV1Contract;
     IECIONFT nftCoreV2Contract;
 
@@ -39,11 +40,8 @@ contract Ecio2EpicWarriorsCollection is EcioChallenge, ECIOHelper {
         address[] memory contracts,
         uint256[] memory tokenIds
     ) public view virtual override returns (uint256) {
-
-        uint count;
-        
+        uint256 count;
         for (uint256 index = 0; index < tokenIds.length; index++) {
-            
             uint256 tokenId = tokenIds[index];
             address contractAdress = contracts[index];
 
@@ -53,21 +51,28 @@ contract Ecio2EpicWarriorsCollection is EcioChallenge, ECIOHelper {
             string[] memory splittedPartCodes = splitPartCode(partCode);
             string memory headCode = splittedPartCodes[PC_GENOME];
 
-            if (
-                compareStrings(headCode, "13") ||
-                compareStrings(headCode, "14") ||
-                compareStrings(headCode, "15") ||
-                compareStrings(headCode, "16")
-            ) {
+            if (matchCondition(headCode)) {
                 count++;
 
-                if(count >= 2){
+                if (count >= 2) {
                     return 20000 * 1e18;
                 }
             }
         }
 
-        return  0;
+        return 0;
+    }
+
+    function matchCondition(string memory headCode)
+        private
+        pure
+        returns (bool)
+    {
+        return
+            compareStrings(headCode, "13") ||
+            compareStrings(headCode, "14") ||
+            compareStrings(headCode, "15") ||
+            compareStrings(headCode, "16");
     }
 
     function compareStrings(string memory a, string memory b)
@@ -77,5 +82,29 @@ contract Ecio2EpicWarriorsCollection is EcioChallenge, ECIOHelper {
     {
         return (keccak256(abi.encodePacked((a))) ==
             keccak256(abi.encodePacked((b))));
+    }
+
+    function staked(address[] memory contracts, uint256[] memory tokenIds)
+        public
+        view
+        returns (uint256, uint256)
+    {
+        uint256 count;
+        for (uint256 index = 0; index < tokenIds.length; index++) {
+            uint256 tokenId = tokenIds[index];
+            address contractAdress = contracts[index];
+
+            string memory partCode;
+            (partCode, ) = IECIONFT(contractAdress).tokenInfo(tokenId);
+
+            string[] memory splittedPartCodes = splitPartCode(partCode);
+            string memory headCode = splittedPartCodes[PC_GENOME];
+
+            if (matchCondition(headCode)) {
+                count++;
+            }
+        }
+
+        return (count, 2);
     }
 }
