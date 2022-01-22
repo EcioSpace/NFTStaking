@@ -13,10 +13,9 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
   //
-  let contracts = ["BattleBot", "BattleDrone", "BattleGear", "BattleSuite", "BattleWeapon", "Head", "SpaceCamp"];
-  contracts = ["NFTStaking"];
+  // let contracts = ["BattleBot", "BattleDrone", "BattleGear", "BattleSuite", "BattleWeapon", "Head", "SpaceCamp"];
+  let contracts = ["NFTStaking"];
 
-  contracts = ["TestSwap"];
 
   for (let i = 0; i < contracts.length; i++) {
     const name = contracts[i];
