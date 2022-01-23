@@ -332,6 +332,33 @@ contract Head {
             infoStr["SH21"][NAME] = "Natalie";
 
 
+            info["SH20"][HP] = 9000000;
+            info["SH20"][ATK] = 0;
+            info["SH20"][DEF] = 0;
+            info["SH20"][ASPD] = 0;
+            info["SH20"][RANGE] = 0;
+            info["SH20"][BONUS_HP] = 11500;
+            info["SH20"][BONUS_ATK] = 11500;
+            info["SH20"][BONUS_DEF] = 11500;
+            info["SH20"][BONUS_ASPD] = 11500;
+            info["SH20"][CRIT] = 0;
+            info["SH20"][DODGE] = 500;
+            info["SH20"][LIFESTEAL] = 0;
+
+            info["SH21"][HP] = 10250000;
+            info["SH21"][ATK] = 0;
+            info["SH21"][DEF] = 0;
+            info["SH21"][ASPD] = 0;
+            info["SH21"][RANGE] = 0;
+            info["SH21"][BONUS_HP] = 11500;
+            info["SH21"][BONUS_ATK] = 11500;
+            info["SH21"][BONUS_DEF] = 11500;
+            info["SH21"][BONUS_ASPD] = 11500;
+            info["SH21"][CRIT] = 0;
+            info["SH21"][DODGE] = 1000;
+            info["SH21"][LIFESTEAL] = 0;
+
+
     }
 
     function getValue(string memory codeNumber, uint256 attributeId)
