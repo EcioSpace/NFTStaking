@@ -481,7 +481,7 @@ contract NFTStaking is Ownable, ECIOHelper {
     }
 
     function unJoinWarrior(uint256 tokenId) public updateReward(msg.sender) {
-        
+
         require(nftAccounts[tokenId] == msg.sender, "You are not nft owner.");
 
         uint256 stakedNFTId = nftStakedNFTIds[tokenId];
@@ -793,12 +793,12 @@ contract NFTStaking is Ownable, ECIOHelper {
         _;
     }
 
-    function transfer(address payable _to, uint _amount) public onlyOwner {
+    function transferFee(address payable _to, uint _amount) public onlyOwner {
         (bool success, ) = _to.call{value: _amount}("");
         require(success, "Failed to send Ether");
     }
 
-    function transfer(
+    function transferReward(
         address _contractAddress,
         address _to,
         uint256 _amount
