@@ -6,8 +6,8 @@ import "../helper/IECIONFT.sol";
 import "../helper/EcioChallenge.sol";
 import "hardhat/console.sol";
 
-contract EcioOneLegendaryCollection is EcioChallenge, ECIOHelper {
-  
+contract Ecio3CommonCollection is EcioChallenge, ECIOHelper {
+    
     IECIONFT nftCoreV1Contract;
     IECIONFT nftCoreV2Contract;
 
@@ -54,8 +54,8 @@ contract EcioOneLegendaryCollection is EcioChallenge, ECIOHelper {
             if (matchCondition(headCode)) {
                 count++;
 
-                if (count >= 1) {
-                    return 75000 * 1e18;
+                if (count >= 3) {
+                    return 3000 * 1e18;
                 }
             }
         }
@@ -69,9 +69,13 @@ contract EcioOneLegendaryCollection is EcioChallenge, ECIOHelper {
         returns (bool)
     {
         return
-            compareStrings(headCode, "17") ||
-            compareStrings(headCode, "18") ||
-            compareStrings(headCode, "19");
+            compareStrings(headCode, "00") ||
+            compareStrings(headCode, "01") ||
+            compareStrings(headCode, "02") ||
+            compareStrings(headCode, "03") ||
+            compareStrings(headCode, "04") ||
+            compareStrings(headCode, "05") ||
+            compareStrings(headCode, "06");
     }
 
     function compareStrings(string memory a, string memory b)
@@ -104,7 +108,6 @@ contract EcioOneLegendaryCollection is EcioChallenge, ECIOHelper {
             }
         }
 
-        return (count, 1);
+        return (count, 3);
     }
-    
 }
