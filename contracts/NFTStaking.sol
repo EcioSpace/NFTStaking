@@ -106,8 +106,8 @@ contract NFTStaking is Ownable, ECIOHelper {
 
     IERC20 public rewardsTokenContract;
 
-    // uint256 public rewardRate = 1930000000000000000;
-    uint256 public rewardRate = 500000000000000000000;
+    uint256 public rewardRate = 1930000000000000000;
+    // uint256 public rewardRate = 500000000000000000000;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
     uint256 public totalFee;
@@ -275,7 +275,7 @@ contract NFTStaking is Ownable, ECIOHelper {
         //     (block.timestamp >= accountLastClaim[msg.sender] + 10 days);
         return
             (rewards(account) >= MINIMUM_AMOUNT_CLAIM) &&
-            (getTimestamp() >= accountLastClaim[msg.sender] + 5 minutes);
+            (getTimestamp() >= accountLastClaim[account] + 5 minutes);
     }
 
     function rewardPerToken() public view returns (uint256) {
@@ -368,9 +368,9 @@ contract NFTStaking is Ownable, ECIOHelper {
             (baseBattlePower + bonusBattlePower),
             name,
             hp,
-            def,
             atk,
-            aspd
+            aspd,
+            def
         );
 
         userStakedNFTCount[msg.sender] += 1;
@@ -418,7 +418,7 @@ contract NFTStaking is Ownable, ECIOHelper {
         return 0;
     }
 
-    function getTopRanking(uint limit) public view returns (Rank[] memory) {
+    function getTopRanking(uint256 limit) public view returns (Rank[] memory) {
         Rank[] memory results = new Rank[](ranks.length);
         for (uint256 index = 0; index < ranks.length; index++) {
             results[index] = ranks[index];
@@ -427,14 +427,11 @@ contract NFTStaking is Ownable, ECIOHelper {
         results = sort(results);
         Rank[] memory top100 = new Rank[](limit);
         for (uint256 index = 0; index < results.length; index++) {
-            
-            if (index > limit-1) {
+            if (index > limit - 1) {
                 break;
             }
 
             top100[index] = results[index];
-
-           
         }
 
         return top100;
@@ -764,7 +761,7 @@ contract NFTStaking is Ownable, ECIOHelper {
             if (stakedNFT.isStaked) {
                 //Calculate staked NFT.
                 uint256 _battlePower;
-                (_battlePower, , , , ,) = calculateBattlePower(
+                (_battlePower, , , , , ) = calculateBattlePower(
                     stakedNFT.contractAddress,
                     stakedNFT.tokenId
                 );
