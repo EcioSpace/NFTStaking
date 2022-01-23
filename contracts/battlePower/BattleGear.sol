@@ -18,8 +18,10 @@ contract BattleGear {
     uint256 constant CRIT = 9;
     uint256 constant DODGE = 10;
     uint256 constant LIFESTEAL = 11;
+    uint256 constant NAME = 12;
 
     mapping(string => mapping(uint256 => uint256)) info;
+    mapping(string => mapping(uint256 => string)) infoStr;
  
  function initialize() public {
         
@@ -36,6 +38,7 @@ contract BattleGear {
             info["SG00"][CRIT] = 0;
             info["SG00"][DODGE] = 0;
             info["SG00"][LIFESTEAL] = 0;
+            infoStr["SG00"][NAME] = "None";
          
             info["SG01"][HP] = 0;
             info["SG01"][ATK] = 0;
@@ -49,6 +52,7 @@ contract BattleGear {
             info["SG01"][CRIT] = 0;
             info["SG01"][DODGE] = 0;
             info["SG01"][LIFESTEAL] = 0;
+            infoStr["SG01"][NAME] = "Imperial Jetpack";
 
             info["SG02"][HP] = 0;
             info["SG02"][ATK] = 0;
@@ -62,6 +66,7 @@ contract BattleGear {
             info["SG02"][CRIT] = 0;
             info["SG02"][DODGE] = 0;
             info["SG02"][LIFESTEAL] = 0;
+            infoStr["SG02"][NAME] = "Imperial Electropack";
 
             info["SG03"][HP] = 0;
             info["SG03"][ATK] = 0;
@@ -75,6 +80,7 @@ contract BattleGear {
             info["SG03"][CRIT] = 0;
             info["SG03"][DODGE] = 0;
             info["SG03"][LIFESTEAL] = 0;
+            infoStr["SG03"][NAME] = "Imperial Gunpack";
 
             info["SG04"][HP] = 0;
             info["SG04"][ATK] = 0;
@@ -88,6 +94,7 @@ contract BattleGear {
             info["SG04"][CRIT] = 0;
             info["SG04"][DODGE] = 0;
             info["SG04"][LIFESTEAL] = 0;
+            infoStr["SG04"][NAME] = "Imperial Robo Claw";
 
             info["SG05"][HP] = 0;
             info["SG05"][ATK] = 0;
@@ -101,6 +108,7 @@ contract BattleGear {
             info["SG05"][CRIT] = 0;
             info["SG05"][DODGE] = 0;
             info["SG05"][LIFESTEAL] = 0;
+            infoStr["SG05"][NAME] = "Vectoring Jetpack";
 
             info["SG06"][HP] = 0;
             info["SG06"][ATK] = 0;
@@ -114,6 +122,7 @@ contract BattleGear {
             info["SG06"][CRIT] = 0;
             info["SG06"][DODGE] = 0;
             info["SG06"][LIFESTEAL] = 0;
+            infoStr["SG06"][NAME] = "Electro Robo Claw";
 
             info["SG07"][HP] = 0;
             info["SG07"][ATK] = 0;
@@ -127,6 +136,7 @@ contract BattleGear {
             info["SG07"][CRIT] = 0;
             info["SG07"][DODGE] = 0;
             info["SG07"][LIFESTEAL] = 0;
+            infoStr["SG07"][NAME] = "Bionic Booster";
 
             info["SG08"][HP] = 0;
             info["SG08"][ATK] = 0;
@@ -140,6 +150,7 @@ contract BattleGear {
             info["SG08"][CRIT] = 0;
             info["SG08"][DODGE] = 0;
             info["SG08"][LIFESTEAL] = 0;
+            infoStr["SG08"][NAME] = "Roboreptile Arm";
 
             info["SG09"][HP] = 0;
             info["SG09"][ATK] = 0;
@@ -153,6 +164,7 @@ contract BattleGear {
             info["SG09"][CRIT] = 0;
             info["SG09"][DODGE] = 0;
             info["SG09"][LIFESTEAL] = 0;
+            infoStr["SG09"][NAME] = "Magma Knife";
 
             info["SG10"][HP] = 0;
             info["SG10"][ATK] = 0;
@@ -166,6 +178,7 @@ contract BattleGear {
             info["SG10"][CRIT] = 0;
             info["SG10"][DODGE] = 0;
             info["SG10"][LIFESTEAL] = 0;
+            infoStr["SG10"][NAME] = "Megavolt Arm";
 
             info["SG11"][HP] = 0;
             info["SG11"][ATK] = 0;
@@ -179,6 +192,7 @@ contract BattleGear {
             info["SG11"][CRIT] = 0;
             info["SG11"][DODGE] = 0;
             info["SG11"][LIFESTEAL] = 0;
+            infoStr["SG11"][NAME] = "The Punisher";
 
             info["SG12"][HP] = 0;
             info["SG12"][ATK] = 0;
@@ -192,6 +206,22 @@ contract BattleGear {
             info["SG12"][CRIT] = 0;
             info["SG12"][DODGE] = 0;
             info["SG12"][LIFESTEAL] = 0;
+            infoStr["SG12"][NAME] = "The Arcangle";
+
+            info["SG13"][HP] = 0;
+            info["SG13"][ATK] = 0;
+            info["SG13"][DEF] = 0;
+            info["SG13"][ASPD] = 0;
+            info["SG13"][RANGE] = 0;
+            info["SG13"][BONUS_HP] = 10000;
+            info["SG13"][BONUS_ATK] = 10000;
+            info["SG13"][BONUS_DEF] = 10000;
+            info["SG13"][BONUS_ASPD] = 10000;
+            info["SG13"][CRIT] = 0;
+            info["SG13"][DODGE] = 0;
+            info["SG13"][LIFESTEAL] = 0;
+            infoStr["SG13"][NAME] = "Valkyrie's Wing";
+
 
 
     }
@@ -202,5 +232,13 @@ contract BattleGear {
         returns (uint256)
     {
         return info[string(abi.encodePacked("SG", codeNumber))][attributeId];
+    }
+
+        function getStrValue(string memory codeNumber, uint256 attributeId)
+        public
+        view
+        returns (string memory)
+    {
+        return infoStr[string(abi.encodePacked("SG", codeNumber))][attributeId];
     }
 }

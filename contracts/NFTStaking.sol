@@ -48,6 +48,11 @@ interface BattlePowor {
         external
         view
         returns (uint256);
+
+    function getStrValue(string memory codeNumber, uint256 attributeId)
+        external
+        view
+        returns (string memory);
 }
 
 interface ChallengeBonus {
@@ -81,6 +86,7 @@ contract NFTStaking is Ownable, ECIOHelper {
     uint256 constant CRIT = 9;
     uint256 constant DODGE = 10;
     uint256 constant LIFESTEAL = 11;
+    uint256 constant NAME = 12;
 
     // Part Code Index
     uint256 constant PC_NFT_TYPE = 12;
@@ -100,7 +106,8 @@ contract NFTStaking is Ownable, ECIOHelper {
 
     IERC20 public rewardsTokenContract;
 
-    uint256 public rewardRate = 10000;
+    // uint256 public rewardRate = 1930000000000000000;
+    uint256 public rewardRate = 500000000000000000000;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
     uint256 public totalFee;
@@ -249,13 +256,26 @@ contract NFTStaking is Ownable, ECIOHelper {
         challengeIdCounter.increment();
     }
 
+    uint256 private mockupTimestamp;
+
+    function setMockupTimestamp(uint256 timestamp) public onlyOwner {
+        mockupTimestamp = timestamp;
+    }
+
+    function getTimestamp() private view returns (uint256) {
+        if (mockupTimestamp != 0) {
+            return mockupTimestamp;
+        }
+        return block.timestamp;
+    }
+
     function canClaimReward(address account) public view returns (bool) {
         //   return
         //     (rewards(account) >= MINIMUM_AMOUNT_CLAIM) &&
         //     (block.timestamp >= accountLastClaim[msg.sender] + 10 days);
         return
             (rewards(account) >= MINIMUM_AMOUNT_CLAIM) &&
-            (block.timestamp >= accountLastClaim[msg.sender] + 5 minutes);
+            (getTimestamp() >= accountLastClaim[msg.sender] + 5 minutes);
     }
 
     function rewardPerToken() public view returns (uint256) {
@@ -264,7 +284,7 @@ contract NFTStaking is Ownable, ECIOHelper {
         }
         return
             rewardPerTokenStored +
-            (((block.timestamp - lastUpdateTime) * rewardRate * 1e18) /
+            (((getTimestamp() - lastUpdateTime) * rewardRate * 1e18) /
                 _totalSupply);
     }
 
@@ -272,7 +292,6 @@ contract NFTStaking is Ownable, ECIOHelper {
         uint256[] memory challengeBonus,
         uint256[] memory challengeIds
     ) private returns (uint256) {
-        
         uint256 bonusBattlePower;
         for (uint256 index = 0; index < challengeBonus.length; index++) {
             if (userChallenge[msg.sender][challengeIds[index]]) {
@@ -325,14 +344,15 @@ contract NFTStaking is Ownable, ECIOHelper {
         uint256 bonusBattlePower;
         uint256[] memory challengeBonus;
         uint256[] memory challengeIds;
+        string memory name;
 
         (challengeBonus, challengeIds) = totalChallengeBonus(msg.sender);
-        
+
         userNFTIds[msg.sender].push(stakedId);
 
         nftAccounts[tokenId] = msg.sender;
 
-        (baseBattlePower, hp, def, atk, aspd) = calculateBattlePower(
+        (baseBattlePower, hp, def, atk, aspd, name) = calculateBattlePower(
             nftCoreAddress,
             tokenId
         );
@@ -342,11 +362,11 @@ contract NFTStaking is Ownable, ECIOHelper {
         stakedNFTs[stakedId] = StakedNFT(
             tokenId,
             nftCoreAddress,
-            block.timestamp,
+            getTimestamp(),
             msg.sender,
             true,
             (baseBattlePower + bonusBattlePower),
-            "Exmple Name",
+            name,
             hp,
             def,
             atk,
@@ -382,14 +402,74 @@ contract NFTStaking is Ownable, ECIOHelper {
         }
     }
 
-    function getRank(address account) public view returns (uint256) {}
-
-    function getTop50Ranking() public view returns (Rank[] memory) {
+    function getRank(address account) public view returns (uint256) {
         Rank[] memory results = new Rank[](ranks.length);
         for (uint256 index = 0; index < ranks.length; index++) {
             results[index] = ranks[index];
         }
-        return results;
+
+        results = sort(results);
+
+        for (uint256 index = 0; index < results.length; index++) {
+            if (results[index].account == account) {
+                return index + 1;
+            }
+        }
+        return 0;
+    }
+
+    function getTopRanking(uint limit) public view returns (Rank[] memory) {
+        Rank[] memory results = new Rank[](ranks.length);
+        for (uint256 index = 0; index < ranks.length; index++) {
+            results[index] = ranks[index];
+        }
+
+        results = sort(results);
+        Rank[] memory top100 = new Rank[](limit);
+        for (uint256 index = 0; index < results.length; index++) {
+            
+            if (index > limit-1) {
+                break;
+            }
+
+            top100[index] = results[index];
+
+           
+        }
+
+        return top100;
+    }
+
+    function sort(Rank[] memory data) private pure returns (Rank[] memory) {
+        quickSort(data, int256(0), int256(data.length - 1));
+        return data;
+    }
+
+    function quickSort(
+        Rank[] memory arr,
+        int256 left,
+        int256 right
+    ) private pure {
+        int256 i = left;
+        int256 j = right;
+        if (i == j) return;
+        Rank memory pivot = arr[uint256(left + (right - left) / 2)];
+        while (i <= j) {
+            while (arr[uint256(i)].totalBattlePower > pivot.totalBattlePower)
+                i++;
+            while (pivot.totalBattlePower > arr[uint256(j)].totalBattlePower)
+                j--;
+            if (i <= j) {
+                (arr[uint256(i)], arr[uint256(j)]) = (
+                    arr[uint256(j)],
+                    arr[uint256(i)]
+                );
+                i++;
+                j--;
+            }
+        }
+        if (left < j) quickSort(arr, left, j);
+        if (i < right) quickSort(arr, i, right);
     }
 
     function joinAllWarrior(uint256[] memory tokenIds) public {
@@ -459,7 +539,7 @@ contract NFTStaking is Ownable, ECIOHelper {
         tokenRewards[msg.sender] = 0;
         rewardsTokenContract.transfer(msg.sender, reward);
 
-        accountLastClaim[msg.sender] = block.timestamp;
+        accountLastClaim[msg.sender] = getTimestamp();
     }
 
     function calculateBattlePower(address contractAddress, uint256 tokenId)
@@ -470,14 +550,16 @@ contract NFTStaking is Ownable, ECIOHelper {
             uint256,
             uint256,
             uint256,
-            uint256
+            uint256,
+            string memory
         )
     {
         string memory partCode;
         uint256 id;
         (partCode, id) = ECIOERC721(contractAddress).tokenInfo(tokenId);
         string[] memory splittedPartCodes = splitPartCode(partCode);
-
+        string memory headCode = splittedPartCodes[PC_GENOME];
+        string memory name = headContract.getStrValue(headCode, NAME);
         uint256 hp = calculateHP(splittedPartCodes);
         uint256 def = calculateDef(splittedPartCodes);
         uint256 atk = calculateAtk(splittedPartCodes);
@@ -488,7 +570,8 @@ contract NFTStaking is Ownable, ECIOHelper {
             hp,
             def,
             atk,
-            aspd
+            aspd,
+            name
         );
     }
 
@@ -634,9 +717,7 @@ contract NFTStaking is Ownable, ECIOHelper {
             contracts[index] = NFTs[index].contractAddress;
         }
 
-
         for (uint256 index = 0; index < challenges.length; index++) {
-
             Challenge memory challenge = challenges[index];
 
             if (!challenge.isDisabled) {
@@ -683,7 +764,7 @@ contract NFTStaking is Ownable, ECIOHelper {
             if (stakedNFT.isStaked) {
                 //Calculate staked NFT.
                 uint256 _battlePower;
-                (_battlePower, , , , ) = calculateBattlePower(
+                (_battlePower, , , , ,) = calculateBattlePower(
                     stakedNFT.contractAddress,
                     stakedNFT.tokenId
                 );
@@ -717,8 +798,7 @@ contract NFTStaking is Ownable, ECIOHelper {
 
     modifier updateReward(address account) {
         rewardPerTokenStored = rewardPerToken();
-        lastUpdateTime = block.timestamp;
-
+        lastUpdateTime = getTimestamp();
         tokenRewards[account] = rewards(account);
         userRewardPerTokenPaid[account] = rewardPerTokenStored;
         _;

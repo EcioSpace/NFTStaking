@@ -17,12 +17,14 @@ contract BattleSuite {
     uint256 constant CRIT = 9;
     uint256 constant DODGE = 10;
     uint256 constant LIFESTEAL = 11;
+    uint256 constant NAME = 12;
 
     mapping(string => mapping(uint256 => uint256)) info;
- 
+    mapping(string => mapping(uint256 => string)) infoStr;
  function initialize() public {
          
       
+           
             info["SS00"][HP] = 0;
             info["SS00"][ATK] = 0;
             info["SS00"][DEF] = 600000;
@@ -35,6 +37,7 @@ contract BattleSuite {
             info["SS00"][CRIT] = 0;
             info["SS00"][DODGE] = 0;
             info["SS00"][LIFESTEAL] = 500;
+            infoStr["SS00"][NAME] = "Vital Suit";
 
             info["SS01"][HP] = 0;
             info["SS01"][ATK] = 0;
@@ -48,6 +51,7 @@ contract BattleSuite {
             info["SS01"][CRIT] = 500;
             info["SS01"][DODGE] = 0;
             info["SS01"][LIFESTEAL] = 0;
+            infoStr["SS01"][NAME] = "Power Suit";
 
             info["SS02"][HP] = 0;
             info["SS02"][ATK] = 0;
@@ -61,6 +65,7 @@ contract BattleSuite {
             info["SS02"][CRIT] = 0;
             info["SS02"][DODGE] = 0;
             info["SS02"][LIFESTEAL] = 0;
+            infoStr["SS02"][NAME] = "Agility Suit";
 
             info["SS03"][HP] = 0;
             info["SS03"][ATK] = 0;
@@ -74,6 +79,7 @@ contract BattleSuite {
             info["SS03"][CRIT] = 0;
             info["SS03"][DODGE] = 500;
             info["SS03"][LIFESTEAL] = 1000;
+            infoStr["SS03"][NAME] = "Dragon Scale";
 
             info["SS04"][HP] = 0;
             info["SS04"][ATK] = 0;
@@ -87,6 +93,7 @@ contract BattleSuite {
             info["SS04"][CRIT] = 1000;
             info["SS04"][DODGE] = 0;
             info["SS04"][LIFESTEAL] = 300;
+            infoStr["SS04"][NAME] = "Mechanic Booster";
 
             info["SS05"][HP] = 0;
             info["SS05"][ATK] = 0;
@@ -100,6 +107,7 @@ contract BattleSuite {
             info["SS05"][CRIT] = 1500;
             info["SS05"][DODGE] = 700;
             info["SS05"][LIFESTEAL] = 0;
+            infoStr["SS05"][NAME] = "Conductive Armor";
 
             info["SS06"][HP] = 0;
             info["SS06"][ATK] = 0;
@@ -113,6 +121,7 @@ contract BattleSuite {
             info["SS06"][CRIT] = 1000;
             info["SS06"][DODGE] = 3000;
             info["SS06"][LIFESTEAL] = 1000;
+            infoStr["SS06"][NAME] = "Kraken Skin";
 
             info["SS07"][HP] = 0;
             info["SS07"][ATK] = 0;
@@ -126,6 +135,7 @@ contract BattleSuite {
             info["SS07"][CRIT] = 2000;
             info["SS07"][DODGE] = 0;
             info["SS07"][LIFESTEAL] = 0;
+            infoStr["SS07"][NAME] = "Hydraulix Booster";
 
             info["SS08"][HP] = 0;
             info["SS08"][ATK] = 0;
@@ -139,6 +149,7 @@ contract BattleSuite {
             info["SS08"][CRIT] = 1000;
             info["SS08"][DODGE] = 500;
             info["SS08"][LIFESTEAL] = 1500;
+            infoStr["SS08"][NAME] = "Ion Booster Suit";
 
             info["SS09"][HP] = 0;
             info["SS09"][ATK] = 0;
@@ -152,6 +163,7 @@ contract BattleSuite {
             info["SS09"][CRIT] = 1000;
             info["SS09"][DODGE] = 0;
             info["SS09"][LIFESTEAL] = 0;
+            infoStr["SS09"][NAME] = "X Emitter";
 
             info["SS10"][HP] = 0;
             info["SS10"][ATK] = 0;
@@ -165,6 +177,7 @@ contract BattleSuite {
             info["SS10"][CRIT] = 1000;
             info["SS10"][DODGE] = 0;
             info["SS10"][LIFESTEAL] = 0;
+            infoStr["SS10"][NAME] = "Lawrencium Armor";
 
             info["SS11"][HP] = 0;
             info["SS11"][ATK] = 0;
@@ -178,6 +191,36 @@ contract BattleSuite {
             info["SS11"][CRIT] = 0;
             info["SS11"][DODGE] = 2000;
             info["SS11"][LIFESTEAL] = 2000;
+            infoStr["SS11"][NAME] = "Anti-Gravity Suit";
+
+            info["SS12"][HP] = 0;
+            info["SS12"][ATK] = 0;
+            info["SS12"][DEF] = 1000000;
+            info["SS12"][ASPD] = 0;
+            info["SS12"][RANGE] = 0;
+            info["SS12"][BONUS_HP] = 10500;
+            info["SS12"][BONUS_ATK] = 10500;
+            info["SS12"][BONUS_DEF] = 10500;
+            info["SS12"][BONUS_ASPD] = 10500;
+            info["SS12"][CRIT] = 500;
+            info["SS12"][DODGE] = 500;
+            info["SS12"][LIFESTEAL] = 500;
+            infoStr["SS12"][NAME] = "RED Tactical Suit";
+
+            info["SS13"][HP] = 0;
+            info["SS13"][ATK] = 0;
+            info["SS13"][DEF] = 1200000;
+            info["SS13"][ASPD] = 0;
+            info["SS13"][RANGE] = 0;
+            info["SS13"][BONUS_HP] = 13000;
+            info["SS13"][BONUS_ATK] = 0;
+            info["SS13"][BONUS_DEF] = 11000;
+            info["SS13"][BONUS_ASPD] = 10000;
+            info["SS13"][CRIT] = 0;
+            info["SS13"][DODGE] = 0;
+            info["SS13"][LIFESTEAL] = 0;
+            infoStr["SS13"][NAME] = "Valkyrie's Suit";
+
 
     }
 
@@ -188,5 +231,11 @@ contract BattleSuite {
     {
         return info[string(abi.encodePacked("SS", codeNumber))][attributeId];
     }
-
+    function getStrValue(string memory codeNumber, uint256 attributeId)
+        public
+        view
+        returns (string memory)
+    {
+        return infoStr[string(abi.encodePacked("SS", codeNumber))][attributeId];
+    }
 }

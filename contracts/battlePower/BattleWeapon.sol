@@ -18,12 +18,12 @@ contract BattleWeapon {
     uint256 constant CRIT = 9;
     uint256 constant DODGE = 10;
     uint256 constant LIFESTEAL = 11;
+    uint256 constant NAME = 12;
 
     mapping(string => mapping(uint256 => uint256)) info;
- 
+    mapping(string => mapping(uint256 => string)) infoStr;
  function initialize() public {
         
-   
             info["SW00"][HP] = 0;
             info["SW00"][ATK] = 470000;
             info["SW00"][DEF] = 0;
@@ -36,6 +36,7 @@ contract BattleWeapon {
             info["SW00"][CRIT] = 1500;
             info["SW00"][DODGE] = 0;
             info["SW00"][LIFESTEAL] = 1500;
+            infoStr["SW00"][NAME] = "Mustard Pipe";
 
             info["SW01"][HP] = 0;
             info["SW01"][ATK] = 420000;
@@ -49,6 +50,7 @@ contract BattleWeapon {
             info["SW01"][CRIT] = 0;
             info["SW01"][DODGE] = 0;
             info["SW01"][LIFESTEAL] = 1500;
+            infoStr["SW01"][NAME] = "Mustard Gas Thrower";
 
             info["SW02"][HP] = 0;
             info["SW02"][ATK] = 690000;
@@ -62,6 +64,7 @@ contract BattleWeapon {
             info["SW02"][CRIT] = 3000;
             info["SW02"][DODGE] = 0;
             info["SW02"][LIFESTEAL] = 0;
+            infoStr["SW02"][NAME] = "Club Swinger";
 
             info["SW03"][HP] = 0;
             info["SW03"][ATK] = 540000;
@@ -75,6 +78,7 @@ contract BattleWeapon {
             info["SW03"][CRIT] = 500;
             info["SW03"][DODGE] = 0;
             info["SW03"][LIFESTEAL] = 0;
+            infoStr["SW03"][NAME] = "Jojo's Electro Wrench";
 
             info["SW04"][HP] = 0;
             info["SW04"][ATK] = 850000;
@@ -88,6 +92,7 @@ contract BattleWeapon {
             info["SW04"][CRIT] = 0;
             info["SW04"][DODGE] = 0;
             info["SW04"][LIFESTEAL] = 1500;
+            infoStr["SW04"][NAME] = "Reptile Gun (King Cobra)";
 
             info["SW05"][HP] = 0;
             info["SW05"][ATK] = 1550000;
@@ -101,6 +106,7 @@ contract BattleWeapon {
             info["SW05"][CRIT] = 1000;
             info["SW05"][DODGE] = 0;
             info["SW05"][LIFESTEAL] = 0;
+            infoStr["SW05"][NAME] = "Granade Launcher";
 
             info["SW06"][HP] = 0;
             info["SW06"][ATK] = 1620000;
@@ -114,6 +120,7 @@ contract BattleWeapon {
             info["SW06"][CRIT] = 2500;
             info["SW06"][DODGE] = 0;
             info["SW06"][LIFESTEAL] = 0;
+            infoStr["SW06"][NAME] = "Jet Hammer";
 
             info["SW07"][HP] = 0;
             info["SW07"][ATK] = 1210000;
@@ -127,6 +134,7 @@ contract BattleWeapon {
             info["SW07"][CRIT] = 500;
             info["SW07"][DODGE] = 0;
             info["SW07"][LIFESTEAL] = 0;
+            infoStr["SW07"][NAME] = "Lightning Gun";
 
             info["SW08"][HP] = 0;
             info["SW08"][ATK] = 1540000;
@@ -140,6 +148,7 @@ contract BattleWeapon {
             info["SW08"][CRIT] = 1000;
             info["SW08"][DODGE] = 0;
             info["SW08"][LIFESTEAL] = 0;
+            infoStr["SW08"][NAME] = "Electric Beam Gun";
 
             info["SW09"][HP] = 0;
             info["SW09"][ATK] = 1260000;
@@ -153,6 +162,7 @@ contract BattleWeapon {
             info["SW09"][CRIT] = 0;
             info["SW09"][DODGE] = 0;
             info["SW09"][LIFESTEAL] = 1500;
+            infoStr["SW09"][NAME] = "Reptile Shortgun (Salamander)";
 
             info["SW10"][HP] = 0;
             info["SW10"][ATK] = 1520000;
@@ -166,6 +176,7 @@ contract BattleWeapon {
             info["SW10"][CRIT] = 500;
             info["SW10"][DODGE] = 0;
             info["SW10"][LIFESTEAL] = 1500;
+            infoStr["SW10"][NAME] = "Venomic Bullet Rifle (Blue Ringed)";
 
             info["SW11"][HP] = 0;
             info["SW11"][ATK] = 2940000;
@@ -179,6 +190,7 @@ contract BattleWeapon {
             info["SW11"][CRIT] = 1000;
             info["SW11"][DODGE] = 0;
             info["SW11"][LIFESTEAL] = 0;
+            infoStr["SW11"][NAME] = "Rapid Rail Gun";
 
             info["SW12"][HP] = 0;
             info["SW12"][ATK] = 2620000;
@@ -192,6 +204,7 @@ contract BattleWeapon {
             info["SW12"][CRIT] = 2000;
             info["SW12"][DODGE] = 0;
             info["SW12"][LIFESTEAL] = 0;
+            infoStr["SW12"][NAME] = "Tesla Spear";
 
             info["SW13"][HP] = 0;
             info["SW13"][ATK] = 1320000;
@@ -205,6 +218,7 @@ contract BattleWeapon {
             info["SW13"][CRIT] = 2000;
             info["SW13"][DODGE] = 0;
             info["SW13"][LIFESTEAL] = 0;
+            infoStr["SW13"][NAME] = "Gamma Beam Gun";
 
             info["SW14"][HP] = 0;
             info["SW14"][ATK] = 4240000;
@@ -218,6 +232,7 @@ contract BattleWeapon {
             info["SW14"][CRIT] = 500;
             info["SW14"][DODGE] = 0;
             info["SW14"][LIFESTEAL] = 0;
+            infoStr["SW14"][NAME] = "Kepler Gun";
 
             info["SW15"][HP] = 0;
             info["SW15"][ATK] = 2980000;
@@ -231,6 +246,7 @@ contract BattleWeapon {
             info["SW15"][CRIT] = 0;
             info["SW15"][DODGE] = 0;
             info["SW15"][LIFESTEAL] = 2000;
+            infoStr["SW15"][NAME] = "Venomic Rocket Launcher (Box Jellyfish)";
 
             info["SW16"][HP] = 0;
             info["SW16"][ATK] = 3670000;
@@ -244,6 +260,7 @@ contract BattleWeapon {
             info["SW16"][CRIT] = 1000;
             info["SW16"][DODGE] = 0;
             info["SW16"][LIFESTEAL] = 0;
+            infoStr["SW16"][NAME] = "HE Rocket Launcher";
 
             info["SW17"][HP] = 0;
             info["SW17"][ATK] = 3240000;
@@ -257,6 +274,7 @@ contract BattleWeapon {
             info["SW17"][CRIT] = 1000;
             info["SW17"][DODGE] = 0;
             info["SW17"][LIFESTEAL] = 0;
+            infoStr["SW17"][NAME] = "Electron Pulse Rifle";
 
             info["SW18"][HP] = 0;
             info["SW18"][ATK] = 2220000;
@@ -270,6 +288,7 @@ contract BattleWeapon {
             info["SW18"][CRIT] = 4000;
             info["SW18"][DODGE] = 0;
             info["SW18"][LIFESTEAL] = 0;
+            infoStr["SW18"][NAME] = "Plasma Injection Saber";
 
             info["SW19"][HP] = 0;
             info["SW19"][ATK] = 6250000;
@@ -283,6 +302,35 @@ contract BattleWeapon {
             info["SW19"][CRIT] = 0;
             info["SW19"][DODGE] = 0;
             info["SW19"][LIFESTEAL] = 0;
+            infoStr["SW19"][NAME] = "Gravitational Distortion Rifle";
+
+            info["SW20"][HP] = 0;
+            info["SW20"][ATK] = 2560000;
+            info["SW20"][DEF] = 0;
+            info["SW20"][ASPD] = 15000;
+            info["SW20"][RANGE] = 60000;
+            info["SW20"][BONUS_HP] = 10000;
+            info["SW20"][BONUS_ATK] = 10000;
+            info["SW20"][BONUS_DEF] = 10000;
+            info["SW20"][BONUS_ASPD] = 10000;
+            info["SW20"][CRIT] = 0;
+            info["SW20"][DODGE] = 0;
+            info["SW20"][LIFESTEAL] = 0;
+            infoStr["SW20"][NAME] = "Snow Blaster";
+
+            info["SW21"][HP] = 0;
+            info["SW21"][ATK] = 2350000;
+            info["SW21"][DEF] = 0;
+            info["SW21"][ASPD] = 14000;
+            info["SW21"][RANGE] = 10000;
+            info["SW21"][BONUS_HP] = 10000;
+            info["SW21"][BONUS_ATK] = 10000;
+            info["SW21"][BONUS_DEF] = 10000;
+            info["SW21"][BONUS_ASPD] = 10000;
+            info["SW21"][CRIT] = 1000;
+            info["SW21"][DODGE] = 0;
+            info["SW21"][LIFESTEAL] = 0;
+            infoStr["SW21"][NAME] = "Valkyrie's Shield";
 
 
     }
@@ -293,5 +341,13 @@ contract BattleWeapon {
         returns (uint256)
     {
         return info[string(abi.encodePacked("SW", codeNumber))][attributeId];
+    }
+
+        function getStrValue(string memory codeNumber, uint256 attributeId)
+        public
+        view
+        returns (string memory)
+    {
+        return infoStr[string(abi.encodePacked("SW", codeNumber))][attributeId];
     }
 }

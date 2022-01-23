@@ -9,7 +9,7 @@ fs.readFile('metadata.json', (err, data) => {
     for (let index = 0; index < records.length; index++) {
         const element = records[index];
 
-        if(element.CODE.includes("SH")){
+        if(element.CODE.includes("SC")){
             console.log(`
             info["`+element.CODE+`"][HP] = `+element.HP*10000+`;
             info["`+element.CODE+`"][ATK] = `+element.ATK*10000+`;
@@ -23,7 +23,7 @@ fs.readFile('metadata.json', (err, data) => {
             info["`+element.CODE+`"][CRIT] = `+element.CRIT*10000+`;
             info["`+element.CODE+`"][DODGE] = `+element.DODGE*10000+`;
             info["`+element.CODE+`"][LIFESTEAL] = `+element.LIFESTEAL*10000+`;
-            info["`+element.NAME+`"][NAME] = "`+element.NAME+`";`
+            infoStr["`+element.CODE+`"][NAME] = "`+element.NAME+`";`
             )
         }        
     }

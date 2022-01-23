@@ -18,11 +18,14 @@ contract BattleDrone {
     uint256 constant CRIT = 9;
     uint256 constant DODGE = 10;
     uint256 constant LIFESTEAL = 11;
+    uint256 constant NAME = 12;
 
     mapping(string => mapping(uint256 => uint256)) info;
- 
+    mapping(string => mapping(uint256 => string)) infoStr;
+
  function initialize() public {
-       info["SD00"][HP] = 0;
+       
+            info["SD00"][HP] = 0;
             info["SD00"][ATK] = 0;
             info["SD00"][DEF] = 0;
             info["SD00"][ASPD] = 0;
@@ -34,6 +37,7 @@ contract BattleDrone {
             info["SD00"][CRIT] = 0;
             info["SD00"][DODGE] = 0;
             info["SD00"][LIFESTEAL] = 0;
+            infoStr["SD00"][NAME] = "None";
 
             info["SD01"][HP] = 0;
             info["SD01"][ATK] = 0;
@@ -47,6 +51,7 @@ contract BattleDrone {
             info["SD01"][CRIT] = 0;
             info["SD01"][DODGE] = 0;
             info["SD01"][LIFESTEAL] = 0;
+            infoStr["SD01"][NAME] = "Paradin";
 
             info["SD02"][HP] = 0;
             info["SD02"][ATK] = 0;
@@ -60,6 +65,7 @@ contract BattleDrone {
             info["SD02"][CRIT] = 0;
             info["SD02"][DODGE] = 0;
             info["SD02"][LIFESTEAL] = 0;
+            infoStr["SD02"][NAME] = "Guardian";
 
             info["SD03"][HP] = 0;
             info["SD03"][ATK] = 0;
@@ -73,6 +79,7 @@ contract BattleDrone {
             info["SD03"][CRIT] = 0;
             info["SD03"][DODGE] = 0;
             info["SD03"][LIFESTEAL] = 0;
+            infoStr["SD03"][NAME] = "Laser Eye";
 
             info["SD04"][HP] = 0;
             info["SD04"][ATK] = 0;
@@ -86,6 +93,7 @@ contract BattleDrone {
             info["SD04"][CRIT] = 0;
             info["SD04"][DODGE] = 0;
             info["SD04"][LIFESTEAL] = 0;
+            infoStr["SD04"][NAME] = "Firefly";
 
             info["SD05"][HP] = 0;
             info["SD05"][ATK] = 0;
@@ -99,6 +107,7 @@ contract BattleDrone {
             info["SD05"][CRIT] = 0;
             info["SD05"][DODGE] = 0;
             info["SD05"][LIFESTEAL] = 0;
+            infoStr["SD05"][NAME] = "Blazer";
 
             info["SD06"][HP] = 0;
             info["SD06"][ATK] = 0;
@@ -112,6 +121,7 @@ contract BattleDrone {
             info["SD06"][CRIT] = 0;
             info["SD06"][DODGE] = 0;
             info["SD06"][LIFESTEAL] = 0;
+            infoStr["SD06"][NAME] = "Speeder";
 
             info["SD07"][HP] = 0;
             info["SD07"][ATK] = 0;
@@ -125,6 +135,7 @@ contract BattleDrone {
             info["SD07"][CRIT] = 0;
             info["SD07"][DODGE] = 0;
             info["SD07"][LIFESTEAL] = 0;
+            infoStr["SD07"][NAME] = "Medicon";
 
             info["SD08"][HP] = 0;
             info["SD08"][ATK] = 0;
@@ -138,6 +149,7 @@ contract BattleDrone {
             info["SD08"][CRIT] = 0;
             info["SD08"][DODGE] = 0;
             info["SD08"][LIFESTEAL] = 0;
+            infoStr["SD08"][NAME] = "Stinger";
 
             info["SD09"][HP] = 0;
             info["SD09"][ATK] = 0;
@@ -151,6 +163,7 @@ contract BattleDrone {
             info["SD09"][CRIT] = 0;
             info["SD09"][DODGE] = 0;
             info["SD09"][LIFESTEAL] = 0;
+            infoStr["SD09"][NAME] = "Electro Striker";
 
             info["SD10"][HP] = 0;
             info["SD10"][ATK] = 0;
@@ -164,6 +177,7 @@ contract BattleDrone {
             info["SD10"][CRIT] = 0;
             info["SD10"][DODGE] = 0;
             info["SD10"][LIFESTEAL] = 0;
+            infoStr["SD10"][NAME] = "Bomber";
 
             info["SD11"][HP] = 0;
             info["SD11"][ATK] = 0;
@@ -177,6 +191,7 @@ contract BattleDrone {
             info["SD11"][CRIT] = 0;
             info["SD11"][DODGE] = 0;
             info["SD11"][LIFESTEAL] = 0;
+            infoStr["SD11"][NAME] = "Almighty Guard";
 
             info["SD12"][HP] = 0;
             info["SD12"][ATK] = 0;
@@ -190,7 +205,7 @@ contract BattleDrone {
             info["SD12"][CRIT] = 0;
             info["SD12"][DODGE] = 0;
             info["SD12"][LIFESTEAL] = 0;
-
+            infoStr["SD12"][NAME] = "Mysterious Mind B";
 
 
     }
@@ -201,5 +216,12 @@ contract BattleDrone {
         returns (uint256)
     {
         return info[string(abi.encodePacked("SD", codeNumber))][attributeId];
+    }
+    function getStrValue(string memory codeNumber, uint256 attributeId)
+        public
+        view
+        returns (string memory)
+    {
+        return infoStr[string(abi.encodePacked("SD", codeNumber))][attributeId];
     }
 }
