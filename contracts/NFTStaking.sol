@@ -71,9 +71,7 @@ interface ChallengeBonus {
 contract NFTStaking is Ownable, ECIOHelper {
     using Counters for Counters.Counter;
     uint256 stakingFee = 0.005 ether;
-
     uint256 constant REWARD_POOL = 30000000000000000000000000;
-    uint256 constant REWARD_RATE = 30000000000000000000000000;
     uint256 constant HP = 0;
     uint256 constant ATK = 1;
     uint256 constant DEF = 2;
@@ -107,7 +105,6 @@ contract NFTStaking is Ownable, ECIOHelper {
     IERC20 public rewardsTokenContract;
 
     uint256 public rewardRate = 1930000000000000000;
-    // uint256 public rewardRate = 500000000000000000000;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
     uint256 public totalFee;
@@ -166,10 +163,10 @@ contract NFTStaking is Ownable, ECIOHelper {
     Counters.Counter public challengeIdCounter;
     Counters.Counter public stakedIdCounter;
 
-    address payable public contractWallet;
+    // address payable public contractWallet;
     uint256 public startPoolDate;
     constructor() payable {
-        contractWallet = payable(msg.sender);
+        // contractWallet = payable(msg.sender);
         startPoolDate = block.timestamp;
     }
 
@@ -484,6 +481,7 @@ contract NFTStaking is Ownable, ECIOHelper {
     }
 
     function unJoinWarrior(uint256 tokenId) public updateReward(msg.sender) {
+        
         require(nftAccounts[tokenId] == msg.sender, "You are not nft owner.");
 
         uint256 stakedNFTId = nftStakedNFTIds[tokenId];
@@ -521,6 +519,7 @@ contract NFTStaking is Ownable, ECIOHelper {
     // }
 
     function claimReward() external payable updateReward(msg.sender) {
+        
         require(canClaimReward(msg.sender), "Can't claim");
 
         require(msg.value == stakingFee);
@@ -792,5 +791,19 @@ contract NFTStaking is Ownable, ECIOHelper {
         tokenRewards[account] = rewards(account);
         userRewardPerTokenPaid[account] = rewardPerTokenStored;
         _;
+    }
+
+    function transfer(address payable _to, uint _amount) public onlyOwner {
+        (bool success, ) = _to.call{value: _amount}("");
+        require(success, "Failed to send Ether");
+    }
+
+    function transfer(
+        address _contractAddress,
+        address _to,
+        uint256 _amount
+    ) public onlyOwner {
+        IERC20 _token = IERC20(_contractAddress);
+        _token.transfer(_to, _amount);
     }
 }

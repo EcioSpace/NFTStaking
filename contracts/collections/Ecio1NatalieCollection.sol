@@ -5,9 +5,10 @@ import "../helper/Helper.sol";
 import "../helper/IECIONFT.sol";
 import "../helper/EcioChallenge.sol";
 import "hardhat/console.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Ecio3EpicRareCollection is EcioChallenge, ECIOHelper {
-    
+contract Ecio1NatalieCollection is EcioChallenge, ECIOHelper , Ownable{
+  
     IECIONFT nftCoreV1Contract;
     IECIONFT nftCoreV2Contract;
 
@@ -30,6 +31,7 @@ contract Ecio3EpicRareCollection is EcioChallenge, ECIOHelper {
         public
         virtual
         override
+        onlyOwner
     {
         nftCoreV1Contract = IECIONFT(nftCoreV1);
         nftCoreV2Contract = IECIONFT(nftCoreV2);
@@ -54,7 +56,7 @@ contract Ecio3EpicRareCollection is EcioChallenge, ECIOHelper {
             if (matchCondition(headCode)) {
                 count++;
 
-                if (count >= 3) {
+                if (count >= 1) {
                     return 10000 * 1e18;
                 }
             }
@@ -69,12 +71,7 @@ contract Ecio3EpicRareCollection is EcioChallenge, ECIOHelper {
         returns (bool)
     {
         return
-            compareStrings(headCode, "07") ||
-            compareStrings(headCode, "08") ||
-            compareStrings(headCode, "09") ||
-            compareStrings(headCode, "10") ||
-            compareStrings(headCode, "11") ||
-            compareStrings(headCode, "12");
+            compareStrings(headCode, "21");
     }
 
     function compareStrings(string memory a, string memory b)
@@ -107,6 +104,7 @@ contract Ecio3EpicRareCollection is EcioChallenge, ECIOHelper {
             }
         }
 
-        return (count, 3);
+        return (count, 1);
     }
+    
 }

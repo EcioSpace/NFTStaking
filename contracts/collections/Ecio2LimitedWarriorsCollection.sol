@@ -5,8 +5,8 @@ import "../helper/Helper.sol";
 import "../helper/IECIONFT.sol";
 import "../helper/EcioChallenge.sol";
 import "hardhat/console.sol";
-
-contract Ecio2LimitedWarriorsCollection is EcioChallenge, ECIOHelper {
+import "@openzeppelin/contracts/access/Ownable.sol";
+contract Ecio2LimitedWarriorsCollection is EcioChallenge, ECIOHelper , Ownable{
     
     IECIONFT nftCoreV1Contract;
     IECIONFT nftCoreV2Contract;
@@ -30,6 +30,7 @@ contract Ecio2LimitedWarriorsCollection is EcioChallenge, ECIOHelper {
         public
         virtual
         override
+        onlyOwner
     {
         nftCoreV1Contract = IECIONFT(nftCoreV1);
         nftCoreV2Contract = IECIONFT(nftCoreV2);
