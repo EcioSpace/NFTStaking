@@ -272,12 +272,9 @@ contract NFTStaking is Ownable, ECIOHelper {
     }
 
     function canClaimReward(address account) public view returns (bool) {
-        //   return
-        //     (rewards(account) >= MINIMUM_AMOUNT_CLAIM) &&
-        //     (block.timestamp >= accountLastClaim[msg.sender] + 10 days);
         return
             (rewards(account) >= MINIMUM_AMOUNT_CLAIM) &&
-            (getTimestamp() >= accountLastClaim[account] + 5 minutes);
+            (getTimestamp() >= accountLastClaim[account] + 10 days);
     }
 
     function rewardPerToken() public view returns (uint256) {
@@ -511,12 +508,6 @@ contract NFTStaking is Ownable, ECIOHelper {
         ranks[rankId].totalBattlePower = _battlePowerBalances[msg.sender];
         ranks[rankId].amount = userStakedNFTCount[msg.sender];
     }
-
-    // function withdraw(uint256 _amount) external updateReward(msg.sender) {
-    //     _totalSupply -= _amount;
-    //     _battlePowerBalances[msg.sender] -= _amount;
-    //     rewardsTokenContract.transfer(msg.sender, _amount);
-    // }
 
     function claimReward() external payable updateReward(msg.sender) {
         
