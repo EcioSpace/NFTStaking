@@ -106,8 +106,8 @@ contract NFTStaking is Ownable, ECIOHelper {
 
     IERC20 public rewardsTokenContract;
 
-    // uint256 public rewardRate = 1930000000000000000;
-    uint256 public rewardRate = 500000000000000000000;
+    uint256 public rewardRate = 1930000000000000000;
+    // uint256 public rewardRate = 500000000000000000000;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
     uint256 public totalFee;
@@ -167,9 +167,10 @@ contract NFTStaking is Ownable, ECIOHelper {
     Counters.Counter public stakedIdCounter;
 
     address payable public contractWallet;
-
+    uint256 public startPoolDate;
     constructor() payable {
         contractWallet = payable(msg.sender);
+        startPoolDate = block.timestamp;
     }
 
     BattlePowor battleBotContract;
@@ -179,6 +180,10 @@ contract NFTStaking is Ownable, ECIOHelper {
     BattlePowor battleWeaponContract;
     BattlePowor headContract;
     BattlePowor campContract;
+
+    function getEndPoolDate()public view returns(uint256){
+        return startPoolDate + 180 days;
+    }
 
     //Setup
     function updateRewardContract(address contractAddress) public onlyOwner {
@@ -275,7 +280,7 @@ contract NFTStaking is Ownable, ECIOHelper {
         //     (block.timestamp >= accountLastClaim[msg.sender] + 10 days);
         return
             (rewards(account) >= MINIMUM_AMOUNT_CLAIM) &&
-            (getTimestamp() >= accountLastClaim[msg.sender] + 5 minutes);
+            (getTimestamp() >= accountLastClaim[account] + 5 minutes);
     }
 
     function rewardPerToken() public view returns (uint256) {
@@ -289,19 +294,18 @@ contract NFTStaking is Ownable, ECIOHelper {
     }
 
     function updateChallenge(
-        uint256[] memory challengeBonus,
-        uint256[] memory challengeIds
+        uint256[] memory challengeBonus
     ) private returns (uint256) {
         uint256 bonusBattlePower;
-        for (uint256 index = 0; index < challengeBonus.length; index++) {
-            if (userChallenge[msg.sender][challengeIds[index]]) {
-                if (challengeBonus[index] == 0) {
-                    userChallenge[msg.sender][challengeIds[index]] = false;
+        for (uint256 challengeId = 0; challengeId < challengeBonus.length; challengeId++) {
+            if (userChallenge[msg.sender][challengeId]) {
+                if (challengeBonus[challengeId] == 0) {
+                    userChallenge[msg.sender][challengeId] = false;
                 }
             } else {
-                if (challengeBonus[index] > 0) {
-                    bonusBattlePower += challengeBonus[index];
-                    userChallenge[msg.sender][challengeIds[index]] = true;
+                if (challengeBonus[challengeId] > 0) {
+                    bonusBattlePower += challengeBonus[challengeId];
+                    userChallenge[msg.sender][challengeId] = true;
                 }
             }
         }
@@ -309,32 +313,19 @@ contract NFTStaking is Ownable, ECIOHelper {
     }
 
     function getContract(uint256 tokenId) internal view returns (address) {
-        //Find NFT in account's wallet
-        address ownerV1 = ERC721(NFTCoreV1).ownerOf(tokenId);
-        address ownerV2 = ERC721(NFTCoreV2).ownerOf(tokenId);
 
-        require(
-            ownerV1 == msg.sender || ownerV2 == msg.sender,
-            "You are not owner"
-        );
-
-        address nftCoreAddress;
-        if (ownerV1 == msg.sender) {
-            nftCoreAddress = NFTCoreV1;
-        } else if (ownerV2 == msg.sender) {
-            nftCoreAddress = NFTCoreV2;
+        if (ERC721(NFTCoreV2).ownerOf(tokenId) == msg.sender) {
+            return NFTCoreV2;
+        } else if (ERC721(NFTCoreV1).ownerOf(tokenId) == msg.sender) {
+            return NFTCoreV1;
         }
 
-        return nftCoreAddress;
+        return address(0);
     }
 
     function joinWarrior(uint256 tokenId) public updateReward(msg.sender) {
+        
         address nftCoreAddress = getContract(tokenId);
-
-        //Transfer NFT to this contract
-        ERC721(nftCoreAddress).transferFrom(msg.sender, address(this), tokenId);
-
-        //Generate stakedId
         uint256 stakedId = stakedIdCounter.current();
         uint256 baseBattlePower;
         uint256 hp;
@@ -342,11 +333,15 @@ contract NFTStaking is Ownable, ECIOHelper {
         uint256 atk;
         uint256 aspd;
         uint256 bonusBattlePower;
-        uint256[] memory challengeBonus;
-        uint256[] memory challengeIds;
+        uint256[] memory challengeBonus = new uint256[](challenges.length);
         string memory name;
 
-        (challengeBonus, challengeIds) = totalChallengeBonus(msg.sender);
+        require(nftCoreAddress != address(0),"You are not owner.");
+
+        //Transfer NFT to this contract
+        ERC721(nftCoreAddress).transferFrom(msg.sender, address(this), tokenId);
+
+        challengeBonus = totalChallengeBonus(msg.sender);
 
         userNFTIds[msg.sender].push(stakedId);
 
@@ -357,7 +352,7 @@ contract NFTStaking is Ownable, ECIOHelper {
             tokenId
         );
 
-        bonusBattlePower = updateChallenge(challengeBonus, challengeIds);
+        bonusBattlePower = updateChallenge(challengeBonus);
 
         stakedNFTs[stakedId] = StakedNFT(
             tokenId,
@@ -368,9 +363,9 @@ contract NFTStaking is Ownable, ECIOHelper {
             (baseBattlePower + bonusBattlePower),
             name,
             hp,
-            def,
             atk,
-            aspd
+            aspd,
+            def
         );
 
         userStakedNFTCount[msg.sender] += 1;
@@ -418,7 +413,7 @@ contract NFTStaking is Ownable, ECIOHelper {
         return 0;
     }
 
-    function getTopRanking(uint limit) public view returns (Rank[] memory) {
+    function getTopRanking(uint256 limit) public view returns (Rank[] memory) {
         Rank[] memory results = new Rank[](ranks.length);
         for (uint256 index = 0; index < ranks.length; index++) {
             results[index] = ranks[index];
@@ -427,14 +422,11 @@ contract NFTStaking is Ownable, ECIOHelper {
         results = sort(results);
         Rank[] memory top100 = new Rank[](limit);
         for (uint256 index = 0; index < results.length; index++) {
-            
-            if (index > limit-1) {
+            if (index > limit - 1) {
                 break;
             }
 
             top100[index] = results[index];
-
-           
         }
 
         return top100;
@@ -703,14 +695,13 @@ contract NFTStaking is Ownable, ECIOHelper {
     function totalChallengeBonus(address account)
         public
         view
-        returns (uint256[] memory, uint256[] memory)
+        returns (uint256[] memory)
     {
         StakedNFT[] memory NFTs = getMyStakedNFTs(account);
 
         uint256[] memory tokenIds = new uint256[](NFTs.length);
         address[] memory contracts = new address[](NFTs.length);
         uint256[] memory challengeBonus = new uint256[](challenges.length);
-        uint256[] memory challengeIds = new uint256[](challenges.length);
 
         for (uint256 index = 0; index < NFTs.length; index++) {
             tokenIds[index] = NFTs[index].tokenId;
@@ -724,11 +715,10 @@ contract NFTStaking is Ownable, ECIOHelper {
                 challengeBonus[index] = ChallengeBonus(
                     challenge.challengeAddress
                 ).bonus(account, contracts, tokenIds);
-                challengeIds[index] = challenge.challengeId;
             }
         }
 
-        return (challengeBonus, challengeIds);
+        return challengeBonus;
     }
 
     //View
@@ -764,7 +754,7 @@ contract NFTStaking is Ownable, ECIOHelper {
             if (stakedNFT.isStaked) {
                 //Calculate staked NFT.
                 uint256 _battlePower;
-                (_battlePower, , , , ,) = calculateBattlePower(
+                (_battlePower, , , , , ) = calculateBattlePower(
                     stakedNFT.contractAddress,
                     stakedNFT.tokenId
                 );

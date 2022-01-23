@@ -26,17 +26,19 @@ npx hardhat help
 
 Testnet Address
 
-BattleBot Address: 0xD6f28e7e64c741f9Fc2614FbfB21c8B3f8F2d5BA
-npx hardhat  verify --network testnet 0xD6f28e7e64c741f9Fc2614FbfB21c8B3f8F2d5BA  --contract contracts/battlePower/BattleBot.sol:BattleBot
-BattleDrone Address: 0xA59373Ff5b501E8671b7DdC60366E2aC4F274666
-npx hardhat  verify --network testnet 0xA59373Ff5b501E8671b7DdC60366E2aC4F274666  --contract contracts/battlePower/BattleDrone.sol:BattleDrone
-BattleGear Address: 0x4fAb054dcc6662BA649BD24EdCC08d1faE0D089A
-npx hardhat  verify --network testnet 0x4fAb054dcc6662BA649BD24EdCC08d1faE0D089A  --contract contracts/battlePower/BattleGear.sol:BattleGear
-BattleSuite Address: 0x7eCE454B808062d98d7F9ba14fCa38E3da8558F5
-npx hardhat  verify --network testnet 0x7eCE454B808062d98d7F9ba14fCa38E3da8558F5  --contract contracts/battlePower/BattleSuite.sol:BattleSuite
-BattleWeapon Address: 0xECE440EbDBB8C9b48CAA308D1b56DA6B77336Eb9
-npx hardhat  verify --network testnet 0xECE440EbDBB8C9b48CAA308D1b56DA6B77336Eb9  --contract contracts/battlePower/BattleWeapon.sol:BattleWeapon
-Head Address: 0x2c891a2A5d621bB054786581a7806C35EBF1422A
-npx hardhat  verify --network testnet 0x2c891a2A5d621bB054786581a7806C35EBF1422A  --contract contracts/battlePower/Head.sol:Head
-SpaceCamp Address: 0x2a9f1bB5295a2E5322310543901138dEb6194efE
-npx hardhat  verify --network testnet 0x2a9f1bB5295a2E5322310543901138dEb6194efE  --contract contracts/battlePower/SpaceCamp.sol:SpaceCamp
+NFTStaking Address: 0xBD0294D1E60256848c187dC564313e4508277e45
+npx hardhat  verify --network testnet 0xBD0294D1E60256848c187dC564313e4508277e45  --contract contracts/NFTStaking.sol:NFTStaking
+
+
+BattleBot Address: 0xAcE27C3994430b3D7faCa2BF5b76195752cb2856
+BattleDrone Address: 0x8a02ED6fb3C027Da578c378cd6AdA7090A4A6902
+BattleGear Address: 0xAe46D3c2ab334eA667c7D8414aBc45d3f1B5c206
+BattleSuite Address: 0x08976b873351EaEA45d85496Da93003978F6099D
+BattleWeapon Address: 0x74E26bDa1cc16eb25EdaA9fb7387E0CE7071AD17
+SpaceCamp Address: 0xEBE04ca3Ff494A5999F00e151AC45f3eD993ef43
+Head Address: 0xF50AeD63efB7606231F07ADf7b248BD5274b8B0f
+
+
+
+
+https://testnet.bscscan.com/address/0x355C443cF9294945791a71ac69471A3BdD15A843
