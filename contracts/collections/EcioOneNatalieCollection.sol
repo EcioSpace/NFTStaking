@@ -6,7 +6,7 @@ import "../helper/IECIONFT.sol";
 import "../helper/EcioChallenge.sol";
 import "hardhat/console.sol";
 
-contract EcioOneLegendaryCollection is EcioChallenge, ECIOHelper {
+contract EcioOneNatalieCollection is EcioChallenge, ECIOHelper {
   
     IECIONFT nftCoreV1Contract;
     IECIONFT nftCoreV2Contract;
