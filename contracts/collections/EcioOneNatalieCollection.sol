@@ -55,7 +55,7 @@ contract EcioOneLegendaryCollection is EcioChallenge, ECIOHelper {
                 count++;
 
                 if (count >= 1) {
-                    return 75000 * 1e18;
+                    return 1500 * 1e18;
                 }
             }
         }
@@ -69,9 +69,7 @@ contract EcioOneLegendaryCollection is EcioChallenge, ECIOHelper {
         returns (bool)
     {
         return
-            compareStrings(headCode, "17") ||
-            compareStrings(headCode, "18") ||
-            compareStrings(headCode, "19");
+            compareStrings(headCode, "21");
     }
 
     function compareStrings(string memory a, string memory b)
