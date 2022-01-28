@@ -69,7 +69,7 @@ contract BattleSuite {
 
             info["SS03"][HP] = 0;
             info["SS03"][ATK] = 0;
-            info["SS03"][DEF] = 1400000;
+            info["SS03"][DEF] = 1000000;
             info["SS03"][ASPD] = 0;
             info["SS03"][RANGE] = 0;
             info["SS03"][BONUS_HP] = 14000;
@@ -213,7 +213,7 @@ contract BattleSuite {
             info["SS13"][ASPD] = 0;
             info["SS13"][RANGE] = 0;
             info["SS13"][BONUS_HP] = 13000;
-            info["SS13"][BONUS_ATK] = 0;
+            info["SS13"][BONUS_ATK] = 10000;
             info["SS13"][BONUS_DEF] = 11000;
             info["SS13"][BONUS_ASPD] = 10000;
             info["SS13"][CRIT] = 0;
